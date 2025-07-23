@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mock Tests for [[${topic.name}]]</title>
+    <link rel="stylesheet" href="/static/css/pe-dashboard.css">
+</head>
+<body>
+    <h1>Mock Tests for [[${topic.name}]]</h1>
+    <a href="/pe-subjects">&larr; Back to Topics</a>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr th:each="mockTest : ${mockTests}">
+            <td th:text="${mockTest.testNumber}"></td>
+            <td th:text="${mockTest.name}"></td>
+            <td th:text="${mockTest.description}"></td>
+            <td>
+                <span th:if="${mockTest.attempted}">Attempted</span>
+                <a th:if="${mockTest.unlocked} && !${mockTest.attempted}" th:href="@{'/mocktest/start/' + ${mockTest.id}}">Take Test</a>
+                <span th:if="${!mockTest.unlocked} && !${mockTest.attempted}">Locked</span>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</body>
+</html> 

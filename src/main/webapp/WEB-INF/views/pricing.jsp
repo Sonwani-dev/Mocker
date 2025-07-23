@@ -93,23 +93,20 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
     document.getElementById('buy-starter-btn').onclick = function(e) {
-        alert('Buy Starter button clicked');
         e.preventDefault();
         var loggedIn = "<%= loggedIn %>" === "true";
         console.log('Logged in:', loggedIn);
         if (!loggedIn) {
-            alert('Not logged in, redirecting to login');
             window.location.href = "${pageContext.request.contextPath}/login";
             return;
         }
         fetch('/create-order?planId=1', { method: 'POST' })
         .then(res => {
             console.log('create-order response:', res);
-            if (!res.ok) { alert('Order creation failed'); throw new Error('Order creation failed'); }
+            if (!res.ok) { throw new Error('Order creation failed'); }
             return res.json();
         })
         .then(data => {
-            alert('Order created, opening Razorpay popup');
             var options = {
                 "key": "rzp_test_juGDlBGq2m7P9a", // Replace with your Razorpay key
                 "amount": "19900", // Or get from plan
@@ -117,7 +114,6 @@
                 "name": "MockTestPro",
                 "order_id": data.orderId,
                 "handler": function (response){
-                    alert('Payment success handler called');
                     fetch('/payment-success', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
@@ -134,7 +130,6 @@
             rzp1.open();
         })
         .catch(err => {
-            alert('Error: ' + err.message);
             console.error(err);
         });
     };

@@ -17,6 +17,10 @@ import jakarta.servlet.http.HttpSession;
 import com.webapp.mocker.models.UserPurchaseRepository;
 import com.webapp.mocker.models.PremiumPlan;
 import com.webapp.mocker.models.UserPurchase;
+import com.webapp.mocker.models.MockTest;
+import com.webapp.mocker.models.MockTestRepository;
+import com.webapp.mocker.models.UserMockTestAttempt;
+import com.webapp.mocker.models.UserMockTestAttemptRepository;
 
 @Controller
 public class PeSubjectsController {
@@ -28,6 +32,10 @@ public class PeSubjectsController {
     private UserTestAccessRepository userTestAccessRepository;
     @Autowired
     private UserPurchaseRepository userPurchaseRepository;
+    @Autowired
+    private MockTestRepository mockTestRepository;
+    @Autowired
+    private UserMockTestAttemptRepository userMockTestAttemptRepository;
 
     @GetMapping("/pe-subjects")
     public String showPeSubjects(Model model, HttpSession session) {
@@ -54,67 +62,12 @@ public class PeSubjectsController {
             return "pe-subjects-dashboard";
         }
         List<Topic> topics = topicRepository.findBySubject("Physical Education");
-        List<Long> topicIds = new ArrayList<>();
-        for (Topic topic : topics) {
-            topicIds.add(topic.getId());
-        }
-        List<UserTestAccess> accessList = userTestAccessRepository.findByUserIdAndTopicIdIn(user.getId(), topicIds);
-        Map<Long, UserTestAccess> accessMap = new HashMap<>();
-        for (UserTestAccess access : accessList) {
-            accessMap.put(access.getTopic().getId(), access);
-        }
-        // Premium logic: check for active purchase
-        List<UserPurchase> activePurchases = userPurchaseRepository.findActivePurchasesByUserId(user.getId());
-        System.out.println("[PE SUBJECTS] User: " + user.getUsername() + ", Active Purchases: " + activePurchases.size());
-        boolean hasPremium = !activePurchases.isEmpty();
-        PremiumPlan userPlan = hasPremium ? activePurchases.get(0).getPlan() : null;
-        if (hasPremium && userPlan != null) {
-            System.out.println("[PE SUBJECTS] Premium Plan: " + userPlan.getName() + ", Expiry: " + activePurchases.get(0).getExpiryDate());
-        }
-        List<Map<String, Object>> topicCards = new ArrayList<>();
-        int unlockedLimit = 5;
-        if (hasPremium && userPlan != null) {
-            String planName = userPlan.getName().toLowerCase();
-            if (planName.contains("basic")) {
-                unlockedLimit = 20;
-            } else if (planName.contains("pro") || planName.contains("ultimate")) {
-                unlockedLimit = topics.size(); // unlock all
-            }
-        }
-        for (int i = 0; i < topics.size(); i++) {
-            Topic topic = topics.get(i);
-            Map<String, Object> card = new HashMap<>();
-            card.put("id", topic.getId());
-            card.put("name", topic.getName());
-            card.put("description", topic.getDescription());
-            if (hasPremium && userPlan != null) {
-                card.put("unlimitedAccess", true);
-                card.put("remainingAccess", -1);
-                card.put("planName", userPlan.getName());
-                boolean locked = i >= unlockedLimit;
-                card.put("locked", locked);
-            } else {
-                card.put("unlimitedAccess", false);
-                UserTestAccess access = accessMap.get(topic.getId());
-                int remaining = 1;
-                if (access != null) {
-                    remaining = Math.max(0, 1 - access.getTestAttemptedCount());
-                }
-                card.put("remainingAccess", remaining);
-                boolean locked = i >= unlockedLimit;
-                card.put("locked", locked);
-            }
-            topicCards.add(card);
-        }
-        model.addAttribute("topics", topicCards);
-        if (hasPremium && userPlan != null) {
-            model.addAttribute("planName", userPlan.getName());
-        }
+        model.addAttribute("topics", topics);
         return "pe-subjects-dashboard";
     }
 
-    @GetMapping("/mocktest/start/{topicId}")
-    public String startMockTest(@PathVariable Long topicId, HttpSession session, Model model) {
+    @GetMapping("/mocktest/start/{mockTestId}")
+    public String startMockTest(@PathVariable Long mockTestId, HttpSession session, Model model) {
         String username = (String) session.getAttribute("username");
         User user = null;
         if (username != null) {
@@ -135,36 +88,94 @@ public class PeSubjectsController {
             model.addAttribute("message", "User not found. Please log in again.");
             return "access-denied";
         }
-        UserTestAccess access = userTestAccessRepository.findByUserIdAndTopicId(user.getId(), topicId);
-        if (access == null) {
-            access = new UserTestAccess();
-            access.setUser(user);
-            Topic topic = topicRepository.findById(topicId).orElse(null);
-            if (topic == null) {
-                model.addAttribute("message", "Topic not found.");
-                return "access-denied";
-            }
-            access.setTopic(topic);
-            access.setTestAttemptedCount(0);
-            userTestAccessRepository.save(access);
-        }
-        if (user.isPremium()) {
-            // Premium users: allow unlimited attempts
-            model.addAttribute("question", "What is the full form of PE?");
-            model.addAttribute("options", List.of("Physical Education", "Public Exam", "Private Entity", "Physical Exercise"));
-            model.addAttribute("topicId", topicId);
-            return "test-demo";
-        }
-        if (access.getTestAttemptedCount() < 1) {
-            access.setTestAttemptedCount(access.getTestAttemptedCount() + 1);
-            userTestAccessRepository.save(access);
-            model.addAttribute("question", "What is the full form of PE?");
-            model.addAttribute("options", List.of("Physical Education", "Public Exam", "Private Entity", "Physical Exercise"));
-            model.addAttribute("topicId", topicId);
-            return "test-demo";
-        } else {
-            model.addAttribute("message", "You have used all your free attempts for this topic. Please upgrade for more access.");
+        MockTest mockTest = mockTestRepository.findById(mockTestId).orElse(null);
+        if (mockTest == null) {
+            model.addAttribute("message", "Mock test not found.");
             return "access-denied";
         }
+        // Check if user has access to this mock test
+        List<UserPurchase> activePurchases = userPurchaseRepository.findActivePurchasesByUserId(user.getId());
+        boolean hasPaid = !activePurchases.isEmpty();
+        boolean unlocked = hasPaid ? (mockTest.getTestNumber() <= 20) : (mockTest.getTestNumber() <= 2);
+        if (!unlocked) {
+            model.addAttribute("message", "You do not have access to this mock test. Please upgrade for more access.");
+            return "access-denied";
+        }
+        // Check if already attempted
+        UserMockTestAttempt attempt = userMockTestAttemptRepository.findByUserIdAndMockTestId(user.getId(), mockTestId);
+        if (attempt != null && attempt.isAttempted()) {
+            model.addAttribute("message", "You have already attempted this mock test.");
+            return "access-denied";
+        }
+        // Mark as attempted
+        if (attempt == null) {
+            attempt = new UserMockTestAttempt();
+            attempt.setUser(user);
+            attempt.setMockTest(mockTest);
+        }
+        attempt.setAttempted(true);
+        userMockTestAttemptRepository.save(attempt);
+        // Show a sample question (replace with real logic as needed)
+        model.addAttribute("question", "What is the full form of PE?");
+        model.addAttribute("options", List.of("Physical Education", "Public Exam", "Private Entity", "Physical Exercise"));
+        model.addAttribute("mockTestId", mockTestId);
+        return "test-demo";
+    }
+
+    @GetMapping("/topic/{topicId}/mocktests")
+    public String showMockTestsForTopic(@PathVariable Long topicId, Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        User user = null;
+        if (username != null) {
+            user = userRepository.findByUsername(username);
+        }
+        if (user == null && username == null) {
+            user = userRepository.findByUsername("demo");
+            if (user == null) {
+                user = new User();
+                user.setUsername("demo");
+                user.setName("Demo User");
+                user.setEmail("demo@example.com");
+                user.setPassword("demo");
+                user = userRepository.save(user);
+            }
+        }
+        if (user == null) {
+            model.addAttribute("error", "User not found. Please log in again.");
+            return "access-denied";
+        }
+        Topic topic = topicRepository.findById(topicId).orElse(null);
+        if (topic == null) {
+            model.addAttribute("error", "Topic not found.");
+            return "access-denied";
+        }
+        List<MockTest> mockTests = mockTestRepository.findByTopicIdOrderByTestNumberAsc(topicId);
+        List<UserPurchase> activePurchases = userPurchaseRepository.findActivePurchasesByUserId(user.getId());
+        boolean hasPaid = !activePurchases.isEmpty();
+        // Get all attempts for this user and topic
+        List<UserMockTestAttempt> attempts = userMockTestAttemptRepository.findByUserIdAndMockTest_TopicId(user.getId(), topicId);
+        Map<Long, UserMockTestAttempt> attemptMap = new HashMap<>();
+        for (UserMockTestAttempt attempt : attempts) {
+            attemptMap.put(attempt.getMockTest().getId(), attempt);
+        }
+        List<Map<String, Object>> mockTestCards = new ArrayList<>();
+        for (MockTest mockTest : mockTests) {
+            Map<String, Object> card = new HashMap<>();
+            card.put("id", mockTest.getId());
+            card.put("testNumber", mockTest.getTestNumber());
+            String displayName = "Mock Test " + mockTest.getTestNumber();
+            card.put("name", displayName);
+            card.put("description", mockTest.getDescription());
+            boolean unlocked = hasPaid || mockTest.getTestNumber() <= 2;
+            card.put("unlocked", unlocked);
+            UserMockTestAttempt attempt = attemptMap.get(mockTest.getId());
+            boolean attempted = attempt != null && attempt.isAttempted();
+            card.put("attempted", attempted);
+            mockTestCards.add(card);
+        }
+        model.addAttribute("topic", topic);
+        model.addAttribute("mockTests", mockTestCards);
+        model.addAttribute("hasPaid", hasPaid);
+        return "mocktest-list";
     }
 } 

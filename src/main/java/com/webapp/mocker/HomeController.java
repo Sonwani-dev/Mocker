@@ -39,9 +39,14 @@ public class HomeController {
     public String home(HttpSession session) {
         String username = (String) session.getAttribute("username");
         if (username != null) {
-            return "redirect:/dashboard";
+            return "redirect:/pe-subjects";
         }
         return "index";
+    }
+
+    @GetMapping("/dashboard")
+    public String dashboardRedirect() {
+        return "redirect:/pe-subjects";
     }
 
     @GetMapping("/pricing")
