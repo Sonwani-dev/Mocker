@@ -21,6 +21,15 @@ public class UserMockTestAttempt {
     @Column(nullable = false)
     private boolean attempted = false;
 
+    @Column(name = "correct_count")
+    private Integer correctCount;
+
+    @Column(name = "total_questions")
+    private Integer totalQuestions;
+
+    @Column(name = "percent")
+    private Integer percent;
+
     // Optionally, add timestamp for attempt
     // private LocalDateTime attemptedAt;
 
@@ -36,4 +45,13 @@ public class UserMockTestAttempt {
 
     public boolean isAttempted() { return attempted; }
     public void setAttempted(boolean attempted) { this.attempted = attempted; }
+
+    public Integer getCorrectCount() { return correctCount; }
+    public void setCorrectCount(Integer correctCount) { this.correctCount = correctCount; }
+
+    public Integer getTotalQuestions() { return totalQuestions; }
+    public void setTotalQuestions(Integer totalQuestions) { this.totalQuestions = totalQuestions; }
+
+    public Integer getPercent() { return percent; }
+    public void setPercent(Integer percent) { this.percent = percent; }
 } 

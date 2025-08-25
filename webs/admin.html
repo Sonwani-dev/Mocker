@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockTestPro - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* Theme System - Same as home page */
+        .theme-selector {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-indicator {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-indicator:hover {
+            transform: scale(1.1);
+            border-color: rgba(255, 255, 255, 0.6);
+        }
+
+        .theme-indicator.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-dropdown {
+            position: absolute;
+            top: calc(100% + 12px);
+            right: 0;
+            background: var(--glass-bg, rgba(255, 255, 255, 0.1));
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            padding: 12px;
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            z-index: 10001;
+        }
+
+        .theme-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .theme-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 20px;
+            width: 0;
+            height: 0;
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-bottom: 6px solid var(--glass-bg, rgba(255, 255, 255, 0.1));
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .theme-option {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .theme-option.active {
+            border-color: #ffffff;
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-option.active::before {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 1;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .theme-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            padding: 4px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Theme Colors */
+        .theme-option:nth-child(1) { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .theme-option:nth-child(2) { background: linear-gradient(135deg, #1a1a1a, #2d2d2d); }
+        .theme-option:nth-child(3) { background: linear-gradient(135deg, #ffffff, #f8f9fa); border: 1px solid #e9ecef; }
+        .theme-option:nth-child(4) { background: linear-gradient(135deg, #0f0f23, #ff006e); }
+        .theme-option:nth-child(5) { background: linear-gradient(135deg, #2d5016, #a8e6cf); }
+        .theme-option:nth-child(6) { background: linear-gradient(135deg, #ff9a56, #ffad56); }
+
+        /* ===== THEME 1: DEFAULT GRADIENT (Current) ===== */
+        .theme-gradient {
+            --primary: #007AFF;
+            --secondary: #5856D6;
+            --background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --text-primary: #1d1d1f;
+            --text-secondary: #86868b;
+            --surface: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .theme-gradient .theme-indicator {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        /* ===== THEME 2: DARK MODE ===== */
+        .theme-dark {
+            --primary: #0a84ff;
+            --secondary: #bf5af2;
+            --background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #a1a1a6;
+            --surface: rgba(255, 255, 255, 0.05);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --card-bg: #2c2c2e;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-dark .theme-indicator {
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+        }
+
+        .theme-dark .theme-dropdown {
+            background: rgba(28, 28, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .theme-dark .theme-dropdown::before {
+            border-bottom-color: rgba(28, 28, 30, 0.9);
+        }
+
+        /* ===== THEME 3: MINIMALIST ===== */
+        .theme-minimal {
+            --primary: #000000;
+            --secondary: #6c757d;
+            --background: #ffffff;
+            --text-primary: #000000;
+            --text-secondary: #6c757d;
+            --surface: #f8f9fa;
+            --glass-bg: rgba(248, 249, 250, 0.8);
+            --card-bg: #ffffff;
+            --border-color: #e9ecef;
+        }
+
+        .theme-minimal .theme-indicator {
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .theme-minimal body {
+            background: var(--background);
+            color: var(--text-primary);
+        }
+
+        .theme-minimal .theme-dropdown {
+            background: rgba(248, 249, 250, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-minimal .theme-dropdown::before {
+            border-bottom-color: rgba(248, 249, 250, 0.95);
+        }
+
+        .theme-minimal .theme-label {
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        /* ===== THEME 4: NEON CYBER ===== */
+        .theme-neon {
+            --primary: #ff006e;
+            --secondary: #8338ec;
+            --background: linear-gradient(135deg, #0f0f23 0%, #1a0b3d 100%);
+            --text-primary: #ffffff;
+            --text-secondary: #a8a8ff;
+            --surface: rgba(255, 0, 110, 0.1);
+            --glass-bg: rgba(131, 56, 236, 0.1);
+            --card-bg: rgba(255, 0, 110, 0.05);
+            --border-color: rgba(255, 0, 110, 0.2);
+        }
+
+        .theme-neon .theme-indicator {
+            background: linear-gradient(135deg, #0f0f23, #ff006e);
+            box-shadow: 0 0 10px rgba(255, 0, 110, 0.4);
+        }
+
+        .theme-neon .theme-dropdown {
+            background: rgba(15, 15, 35, 0.9);
+            border: 1px solid rgba(255, 0, 110, 0.3);
+            box-shadow: 0 16px 60px rgba(255, 0, 110, 0.2);
+        }
+
+        .theme-neon .theme-dropdown::before {
+            border-bottom-color: rgba(15, 15, 35, 0.9);
+        }
+
+        .theme-neon .theme-label {
+            color: #a8a8ff;
+        }
+
+        /* ===== THEME 5: NATURE/ECO ===== */
+        .theme-nature {
+            --primary: #2d5016;
+            --secondary: #4a7c59;
+            --background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+            --text-primary: #1b4332;
+            --text-secondary: #40916c;
+            --surface: rgba(45, 80, 22, 0.1);
+            --glass-bg: rgba(168, 230, 207, 0.3);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(45, 80, 22, 0.2);
+        }
+
+        .theme-nature .theme-indicator {
+            background: linear-gradient(135deg, #2d5016, #a8e6cf);
+        }
+
+        .theme-nature .theme-dropdown {
+            background: rgba(168, 230, 207, 0.9);
+            border: 1px solid rgba(45, 80, 22, 0.2);
+        }
+
+        .theme-nature .theme-dropdown::before {
+            border-bottom-color: rgba(168, 230, 207, 0.9);
+        }
+
+        .theme-nature .theme-label {
+            color: rgba(27, 67, 50, 0.8);
+        }
+
+        /* ===== THEME 6: WARM SUNSET ===== */
+        .theme-warm {
+            --primary: #ff6b35;
+            --secondary: #f7931e;
+            --background: linear-gradient(135deg, #ff9a56 0%, #ffad56 100%);
+            --text-primary: #2c1810;
+            --text-secondary: #8b4513;
+            --surface: rgba(255, 107, 53, 0.2);
+            --glass-bg: rgba(255, 173, 86, 0.3);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(255, 107, 53, 0.3);
+        }
+
+        .theme-warm .theme-indicator {
+            background: linear-gradient(135deg, #ff9a56, #ffad56);
+        }
+
+        .theme-warm .theme-dropdown {
+            background: rgba(255, 173, 86, 0.9);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+        }
+
+        .theme-warm .theme-dropdown::before {
+            border-bottom-color: rgba(255, 173, 86, 0.9);
+        }
+
+        .theme-warm .theme-label {
+            color: rgba(44, 24, 16, 0.8);
+        }
+
+        /* Admin Panel Styles */
+        body {
+            background: var(--background);
+            color: var(--text-primary);
+        }
+
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .float-element {
+            position: absolute;
+            background: var(--surface);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+
+        .float-element:nth-child(1) { width: 80px; height: 80px; top: 20%; left: 10%; animation-delay: 0s; }
+        .float-element:nth-child(2) { width: 120px; height: 120px; top: 60%; left: 80%; animation-delay: 5s; }
+        .float-element:nth-child(3) { width: 60px; height: 60px; top: 80%; left: 20%; animation-delay: 10s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+            100% { transform: translateY(0px) rotate(360deg); opacity: 0.7; }
+        }
+
+        .header {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            z-index: 1000;
+            padding: 12px 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            width: calc(100% - 40px);
+            max-width: 1200px;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            padding: 8px 16px;
+            border-radius: 12px;
+        }
+
+        .nav-links a:hover {
+            background: var(--surface);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .admin-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .logout-btn {
+            background: rgba(255, 59, 48, 0.1);
+            color: #ff3b30;
+            padding: 8px 16px;
+            border-radius: 16px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 59, 48, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .main-container {
+            padding: 120px 24px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .dashboard-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .dashboard-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .admin-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 40px;
+            transition: all 0.4s ease;
+        }
+
+        .admin-section:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            background: var(--surface);
+            backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .btn {
+            padding: 16px 32px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 122, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff3b30, #ff6b6b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 59, 48, 0.4);
+        }
+
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            background: var(--surface);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .file-upload input {
+            display: none;
+        }
+
+        .upload-icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+            color: var(--text-secondary);
+        }
+
+        .upload-text {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-secondary);
+            opacity: 0.8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 32px 24px;
+            text-align: center;
+            transition: all 0.4s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .test-management {
+            grid-column: 1 / -1;
+        }
+
+        .test-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .test-id-input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #34c759, #30d158);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .success-message.show {
+            display: flex;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #ff3b30, #ff6b6b);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .header-container {
+                gap: 12px;
+            }
+
+            .admin-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+
+            .dashboard-title {
+                font-size: 2.2rem;
+            }
+
+            .main-container {
+                padding: 100px 16px 40px;
+            }
+
+            .admin-section {
+                padding: 24px;
+            }
+
+            .test-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .test-id-input {
+                min-width: auto;
+            }
+
+            .theme-dropdown {
+                right: -20px;
+                min-width: 160px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .theme-dropdown {
+                right: -40px;
+                min-width: 140px;
+                padding: 8px;
+            }
+
+            .theme-grid {
+                gap: 6px;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body class="theme-gradient">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">MockTestPro</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#subjects">Subjects</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#dashboard" class="active">Dashboard</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="admin-badge">Admin</div>
+                <div class="theme-selector">
+                    <div class="theme-indicator active" id="themeIndicator"></div>
+                    <div class="theme-dropdown" id="themeDropdown">
+                        <div class="theme-grid">
+                            <button class="theme-option active" onclick="setTheme('gradient', this)" title="Gradient" data-theme="gradient"></button>
+                            <button class="theme-option" onclick="setTheme('dark', this)" title="Dark Mode" data-theme="dark"></button>
+                            <button class="theme-option" onclick="setTheme('minimal', this)" title="Minimalist" data-theme="minimal"></button>
+                            <button class="theme-option" onclick="setTheme('neon', this)" title="Neon Cyber" data-theme="neon"></button>
+                            <button class="theme-option" onclick="setTheme('nature', this)" title="Nature" data-theme="nature"></button>
+                            <button class="theme-option" onclick="setTheme('warm', this)" title="Warm Sunset" data-theme="warm"></button>
+                        </div>
+                        <div class="theme-label">Choose Theme</div>
+                    </div>
+                </div>
+                <a href="#" class="logout-btn">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <p class="dashboard-subtitle">Manage tests, topics, and monitor platform statistics</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">1,247</div>
+                <div class="stat-label">Total Tests</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">89</div>
+                <div class="stat-label">Active Topics</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">15,432</div>
+                <div class="stat-label">Student Attempts</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">98.5%</div>
+                <div class="stat-label">System Uptime</div>
+            </div>
+        </div>
+
+        <!-- Admin Grid -->
+        <div class="admin-grid">
+            <!-- Upload Test Section -->
+            <div class="admin-section">
+                <h2 class="section-title">
+                    <div class="section-icon">📁</div>
+                    Upload Test
+                </h2>
+                
+                <div id="uploadSuccess" class="success-message">
+                    <span>✓</span>
+                    <span>Test uploaded successfully!</span>
+                </div>
+                
+                <div id="uploadError" class="error-message">
+                    <span>✗</span>
+                    <span>Error uploading test. Please try again.</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Number of Questions</label>
+                    <input type="number" class="form-input" id="numQuestions" placeholder="25" min="1" max="100">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Duration (minutes)</label>
+                    <input type="number" class="form-input" id="duration" placeholder="60" min="5" max="300">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Upload Spreadsheet (.xlsx or .csv)</label>
+                    <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                        <input type="file" id="fileInput" accept=".xlsx,.csv" onchange="handleFileSelect(event)">
+                        <div class="upload-icon">📄</div>
+                        <div class="upload-text">Click to select file or drag and drop</div>
+                        <div class="upload-hint">Supports .xlsx and .csv formats</div>
+                        <div id="fileName" style="margin-top: 12px; font-weight: 600; color: var(--primary); display: none;"></div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="uploadTest()">
+                    <span>📤</span>
+                    Upload Test
+                </button>
+            </div>
+
+            <!-- Test Management Section -->
+            <div class="admin-section test-management">
+                <h2 class="section-title">
+                    <div class="section-icon">🎯</div>
+                    Test Management
+                </h2>
+                
+                <div id="deleteSuccess" class="success-message">
+                    <span>✓</span>
+                    <span>Test deleted successfully!</span>
+                </div>
+                
+                <div id="deleteError" class="error-message">
+                    <span>✗</span>
+                    <span>Test not found or error occurred.</span>
+                </div>
+
+                <p style="margin-bottom: 24px; color: var(--text-secondary);">
+                    Use the form below to view test details or delete tests by ID. Test IDs can be found in the subjects section.
+                </p>
+
+                <div class="test-actions">
+                    <div class="form-group test-id-input" style="margin-bottom: 0;">
+                        <input type="text" class="form-input" id="testId" placeholder="Enter Test ID">
+                    </div>
+                    <button class="btn btn-secondary" onclick="viewTest()">
+                        <span>👁️</span>
+                        View Test
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteTest()">
+                        <span>🗑️</span>
+                        Delete Test
+                    </button>
+                </div>
+
+                <!-- Test Details Display -->
+                <div id="testDetails" style="display: none; margin-top: 32px; padding: 24px; background: var(--surface); border-radius: 16px; border: 1px solid var(--border-color);">
+                    <h3 style="margin-bottom: 16px; color: var(--text-primary);">Test Details</h3>
+                    <div id="testInfo"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Section -->
+        <div class="admin-section" style="margin-top: 40px;">
+            <h2 class="section-title">
+                <div class="section-icon">📊</div>
+                Recent Activity
+            </h2>
+            
+            <div style="display: grid; gap: 16px;">
+                <div style="padding: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid var(--primary);">
+                    <div style="font-weight: 600; margin-bottom: 4px;">Test "Advanced First Aid" uploaded</div>
+                    <div style="font-size: 14px; color: var(--text-secondary);">2 hours ago • 25 questions • First Aid Basics</div>
+                </div>
+                <div style="padding: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid #34c759;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">1,247 students completed tests today</div>
+                    <div style="font-size: 14px; color: var(--text-secondary);">Daily completion milestone reached</div>
+                </div>
+                <div style="padding: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid #ff9500;">
+                    <div style="font-weight: 600; margin-bottom: 4px;">New topic "Sports Nutrition" created</div>
+                    <div style="font-size: 14px; color: var(--text-secondary);">1 day ago • 8 tests assigned</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isDropdownOpen = false;
+        let selectedFile = null;
+
+        // Theme Management (Same as home page)
+        function setTheme(theme, element) {
+            document.body.classList.remove('theme-gradient', 'theme-dark', 'theme-minimal', 'theme-neon', 'theme-nature', 'theme-warm');
+            document.body.classList.add('theme-' + theme);
+            
+            document.querySelectorAll('.theme-option').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            updateThemeIndicator(theme);
+            
+            document.body.style.transition = 'all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 500);
+
+            closeThemeDropdown();
+        }
+
+        function updateThemeIndicator(theme) {
+            const indicator = document.getElementById('themeIndicator');
+            const themeColors = {
+                'gradient': 'linear-gradient(135deg, #667eea, #764ba2)',
+                'dark': 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
+                'minimal': 'linear-gradient(135deg, #ffffff, #f8f9fa)',
+                'neon': 'linear-gradient(135deg, #0f0f23, #ff006e)',
+                'nature': 'linear-gradient(135deg, #2d5016, #a8e6cf)',
+                'warm': 'linear-gradient(135deg, #ff9a56, #ffad56)'
+            };
+            
+            indicator.style.background = themeColors[theme];
+            
+            if (theme === 'minimal') {
+                indicator.style.border = '2px solid rgba(0, 0, 0, 0.2)';
+            } else {
+                indicator.style.border = '2px solid rgba(255, 255, 255, 0.3)';
+            }
+        }
+
+        function toggleThemeDropdown() {
+            const dropdown = document.getElementById('themeDropdown');
+            isDropdownOpen = !isDropdownOpen;
+            
+            if (isDropdownOpen) {
+                dropdown.classList.add('show');
+            } else {
+                dropdown.classList.remove('show');
+            }
+        }
+
+        function closeThemeDropdown() {
+            const dropdown = document.getElementById('themeDropdown');
+            dropdown.classList.remove('show');
+            isDropdownOpen = false;
+        }
+
+        // Admin Functions
+        function handleFileSelect(event) {
+            selectedFile = event.target.files[0];
+            const fileName = document.getElementById('fileName');
+            
+            if (selectedFile) {
+                fileName.textContent = `Selected: ${selectedFile.name}`;
+                fileName.style.display = 'block';
+            } else {
+                fileName.style.display = 'none';
+            }
+        }
+
+        function uploadTest() {
+            const topic = document.getElementById('topicSelect').value || document.getElementById('newTopic').value;
+            const testName = document.getElementById('testName').value;
+            const numQuestions = document.getElementById('numQuestions').value;
+            const duration = document.getElementById('duration').value;
+            
+            // Hide previous messages
+            document.getElementById('uploadSuccess').classList.remove('show');
+            document.getElementById('uploadError').classList.remove('show');
+            
+            // Basic validation
+            if (!topic || !testName || !numQuestions || !duration) {
+                showMessage('uploadError', 'Please fill in all required fields.');
+                return;
+            }
+            
+            if (!selectedFile) {
+                showMessage('uploadError', 'Please select a file to upload.');
+                return;
+            }
+            
+            // Simulate upload process
+            const uploadBtn = event.target;
+            const originalText = uploadBtn.innerHTML;
+            uploadBtn.innerHTML = '<span>⏳</span> Uploading...';
+            uploadBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Simulate successful upload
+                showMessage('uploadSuccess', `Test "${testName}" uploaded successfully to ${topic}!`);
+                
+                // Reset form
+                document.getElementById('testName').value = '';
+                document.getElementById('numQuestions').value = '';
+                document.getElementById('duration').value = '';
+                document.getElementById('newTopic').value = '';
+                document.getElementById('fileInput').value = '';
+                document.getElementById('fileName').style.display = 'none';
+                selectedFile = null;
+                
+                // Reset button
+                uploadBtn.innerHTML = originalText;
+                uploadBtn.disabled = false;
+                
+                // Update stats (simulate)
+                updateStats();
+            }, 2000);
+        }
+
+        function viewTest() {
+            const testId = document.getElementById('testId').value.trim();
+            
+            if (!testId) {
+                showMessage('deleteError', 'Please enter a Test ID.');
+                return;
+            }
+            
+            // Simulate test lookup
+            const testDetails = document.getElementById('testDetails');
+            const testInfo = document.getElementById('testInfo');
+            
+            // Mock test data
+            const mockTest = {
+                id: testId,
+                name: `Sample Test ${testId}`,
+                topic: 'First Aid Basics',
+                questions: 25,
+                duration: 60,
+                attempts: 1247,
+                avgScore: '78.5%',
+                created: '2024-01-15'
+            };
+            
+            testInfo.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <div>
+                        <strong>Test Name:</strong><br>
+                        <span style="color: var(--text-secondary);">${mockTest.name}</span>
+                    </div>
+                    <div>
+                        <strong>Topic:</strong><br>
+                        <span style="color: var(--text-secondary);">${mockTest.topic}</span>
+                    </div>
+                    <div>
+                        <strong>Questions:</strong><br>
+                        <span style="color: var(--text-secondary);">${mockTest.questions}</span>
+                    </div>
+                    <div>
+                        <strong>Duration:</strong><br>
+                        <span style="color: var(--text-secondary);">${mockTest.duration} minutes</span>
+                    </div>
+                    <div>
+                        <strong>Total Attempts:</strong><br>
+                        <span style="color: var(--text-secondary);">${mockTest.attempts}</span>
+                    </div>
+                    <div>
+                        <strong>Average Score:</strong><br>
+                        <span style="color: var(--text-secondary);">${mockTest.avgScore}</span>
+                    </div>
+                </div>
+            `;
+            
+            testDetails.style.display = 'block';
+        }
+
+        function deleteTest() {
+            const testId = document.getElementById('testId').value.trim();
+            
+            if (!testId) {
+                showMessage('deleteError', 'Please enter a Test ID.');
+                return;
+            }
+            
+            if (!confirm(`Are you sure you want to delete test ID: ${testId}? This action cannot be undone.`)) {
+                return;
+            }
+            
+            // Hide previous messages
+            document.getElementById('deleteSuccess').classList.remove('show');
+            document.getElementById('deleteError').classList.remove('show');
+            
+            // Simulate deletion
+            setTimeout(() => {
+                showMessage('deleteSuccess', `Test ID ${testId} has been deleted successfully.`);
+                document.getElementById('testId').value = '';
+                document.getElementById('testDetails').style.display = 'none';
+                updateStats();
+            }, 1000);
+        }
+
+        function showMessage(elementId, message) {
+            const element = document.getElementById(elementId);
+            const messageSpan = element.querySelector('span:last-child');
+            messageSpan.textContent = message;
+            element.classList.add('show');
+            
+            setTimeout(() => {
+                element.classList.remove('show');
+            }, 5000);
+        }
+
+        function updateStats() {
+            // Simulate updating statistics
+            const statNumbers = document.querySelectorAll('.stat-number');
+            statNumbers.forEach(stat => {
+                const currentValue = parseInt(stat.textContent.replace(/,/g, ''));
+                if (!isNaN(currentValue)) {
+                    const newValue = currentValue + Math.floor(Math.random() * 10) + 1;
+                    stat.textContent = newValue.toLocaleString();
+                }
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('themeIndicator').addEventListener('click', toggleThemeDropdown);
+
+        document.addEventListener('click', (e) => {
+            const themeSelector = document.querySelector('.theme-selector');
+            if (!themeSelector.contains(e.target)) {
+                closeThemeDropdown();
+            }
+        });
+
+        document.getElementById('themeDropdown').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Initialize
+        window.addEventListener('load', () => {
+            updateThemeIndicator('gradient');
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Enhanced interactions
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.6);
+                    transform: scale(0);
+                    animation: ripple 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Smooth scrolling and dynamic header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            const scrollY = window.scrollY;
+            
+            if (scrollY > 100) {
+                header.style.backdropFilter = 'blur(60px)';
+            } else {
+                header.style.backdropFilter = 'blur(40px)';
+            }
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isDropdownOpen) {
+                closeThemeDropdown();
+            }
+            
+            // Alt + U for upload focus
+            if (e.altKey && e.key === 'u') {
+                e.preventDefault();
+                document.getElementById('testName').focus();
+            }
+            
+            // Alt + D for delete focus
+            if (e.altKey && e.key === 'd') {
+                e.preventDefault();
+                document.getElementById('testId').focus();
+            }
+        });
+
+        // Auto-save form data
+        const formInputs = document.querySelectorAll('.form-input');
+        formInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                // In a real app, you'd save to localStorage or send to server
+                // For demo purposes, we'll just add a subtle visual feedback
+                input.style.borderColor = 'var(--primary)';
+                setTimeout(() => {
+                    input.style.borderColor = 'var(--border-color)';
+                }, 200);
+            });
+        });
+
+        // Parallax floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.floating-elements');
+            if (parallax) {
+                const rate = scrolled * -0.2;
+                parallax.style.transform = `translateY(${rate}px)`;
+            }
+        });
+
+        // Mobile touch support
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaY = touchStartY - touchEndY;
+            
+            if (deltaY > 50 && isDropdownOpen) {
+                closeThemeDropdown();
+            }
+        });
+
+        // Add loading states for buttons
+        function addLoadingState(button, duration = 2000) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span>⏳</span> Loading...';
+            button.disabled = true;
+            
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            }, duration);
+        }
+
+        // Enhanced file upload feedback
+        document.getElementById('fileInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const uploadArea = document.querySelector('.file-upload');
+            
+            if (file) {
+                uploadArea.style.borderColor = 'var(--primary)';
+                uploadArea.style.background = 'rgba(0, 122, 255, 0.1)';
+            } else {
+                uploadArea.style.borderColor = 'var(--border-color)';
+                uploadArea.style.background = 'var(--surface)';
+            }
+        });
+    </script>
+</body>
+</html>
+                    <label class="form-label">Select Topic</label>
+                    <input type="text" class="form-input" id="topicSelect" placeholder="First Aid Basics" value="First Aid Basics">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Add New Topic (Optional)</label>
+                    <input type="text" class="form-input" id="newTopic" placeholder="New topic name">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Test Name</label>
+                    <input type="text" class="form-input" id="testName" placeholder="Test Name">
+                </div>
+
+                <div class="form-group">

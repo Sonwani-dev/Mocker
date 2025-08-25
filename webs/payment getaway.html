@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockTestPro - Payment Gateway</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #007AFF;
+            --primary-purple: #5856D6;
+            --dark-blue: #1d1d1f;
+            --light-gray: #f5f5f7;
+            --medium-gray: #86868b;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-heavy: rgba(0, 0, 0, 0.25);
+            --success-green: #34C759;
+            --warning-orange: #FF9500;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(40px);
+            border-radius: 32px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 32px 100px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .payment-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 8px;
+        }
+
+        .payment-subtitle {
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+
+        .plan-summary {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .plan-summary::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .plan-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .plan-price {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 4px;
+        }
+
+        .plan-period {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .payment-methods {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 16px;
+        }
+
+        .payment-method {
+            background: white;
+            border: 2px solid rgba(0, 0, 0, 0.08);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .payment-method:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 122, 255, 0.15);
+        }
+
+        .payment-method.selected {
+            border-color: var(--primary-blue);
+            background: rgba(0, 122, 255, 0.05);
+        }
+
+        .payment-method.selected::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+        }
+
+        .method-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .upi-icon {
+            background: linear-gradient(135deg, #FF6B35, #F7931E);
+            color: white;
+        }
+
+        .card-icon {
+            background: linear-gradient(135deg, #4285F4, #34A853);
+            color: white;
+        }
+
+        .netbanking-icon {
+            background: linear-gradient(135deg, #9C27B0, #673AB7);
+            color: white;
+        }
+
+        .wallet-icon {
+            background: linear-gradient(135deg, #FF5722, #FF9800);
+            color: white;
+        }
+
+        .method-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 2px;
+        }
+
+        .method-info p {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+
+        .method-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recommended-badge {
+            background: var(--success-green);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .radio-button {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--medium-gray);
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .payment-method.selected .radio-button {
+            border-color: var(--primary-blue);
+        }
+
+        .payment-method.selected .radio-button::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px;
+            height: 10px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+        }
+
+        .upi-details {
+            display: none;
+            background: rgba(0, 122, 255, 0.05);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 16px;
+            border: 1px solid rgba(0, 122, 255, 0.1);
+        }
+
+        .upi-details.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .qr-code {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 12px;
+            margin: 0 auto 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .upi-apps {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .upi-app {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upi-app:hover {
+            transform: scale(1.1);
+        }
+
+        .gpay { background: linear-gradient(135deg, #4285F4, #34A853); }
+        .phonepe { background: linear-gradient(135deg, #5F259F, #7B68EE); }
+        .paytm { background: linear-gradient(135deg, #002970, #00BAF2); }
+
+        .security-info {
+            background: rgba(52, 199, 89, 0.1);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .security-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--success-green);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .security-text {
+            flex: 1;
+        }
+
+        .security-text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 2px;
+        }
+
+        .security-text p {
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+
+        .payment-button {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 18px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 12px 40px rgba(0, 122, 255, 0.3);
+            margin-bottom: 16px;
+        }
+
+        .payment-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 50px rgba(0, 122, 255, 0.4);
+        }
+
+        .payment-button:active {
+            transform: translateY(0);
+        }
+
+        .terms {
+            text-align: center;
+            font-size: 12px;
+            color: var(--medium-gray);
+            line-height: 1.4;
+        }
+
+        .terms a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        .powered-by {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            color: var(--medium-gray);
+        }
+
+        @media (max-width: 480px) {
+            .payment-container {
+                padding: 24px;
+                margin: 16px;
+            }
+            
+            .plan-summary {
+                padding: 20px;
+            }
+            
+            .payment-method {
+                padding: 14px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <div class="logo">MockTestPro</div>
+            <h2 class="payment-title">Complete Your Payment</h2>
+            <p class="payment-subtitle">Choose your preferred payment method</p>
+        </div>
+
+        <div class="plan-summary">
+            <div class="plan-name">Pro Plan</div>
+            <div class="plan-price">₹499</div>
+            <div class="plan-period">per month</div>
+        </div>
+
+        <div class="payment-methods">
+            <h3 class="section-title">Payment Options</h3>
+            
+            <div class="payment-method selected" onclick="selectPaymentMethod(this, 'upi')">
+                <div class="method-left">
+                    <div class="method-icon upi-icon">U</div>
+                    <div class="method-info">
+                        <h4>UPI</h4>
+                        <p>Pay using any UPI app</p>
+                    </div>
+                </div>
+                <div class="method-right">
+                    <span class="recommended-badge">Recommended</span>
+                    <div class="radio-button"></div>
+                </div>
+            </div>
+
+            <div class="upi-details show">
+                <div class="qr-container">
+                    <div class="qr-code">📱</div>
+                    <p style="font-size: 14px; color: var(--dark-blue); font-weight: 500;">Scan QR code with any UPI app</p>
+                </div>
+                <div class="upi-apps">
+                    <div class="upi-app gpay" title="Google Pay">G</div>
+                    <div class="upi-app phonepe" title="PhonePe">P</div>
+                    <div class="upi-app paytm" title="Paytm">₹</div>
+                </div>
+            </div>
+
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'cards')">
+                <div class="method-left">
+                    <div class="method-icon card-icon">💳</div>
+                    <div class="method-info">
+                        <h4>Cards</h4>
+                        <p>Credit & Debit cards</p>
+                    </div>
+                </div>
+                <div class="method-right">
+                    <div class="radio-button"></div>
+                </div>
+            </div>
+
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'netbanking')">
+                <div class="method-left">
+                    <div class="method-icon netbanking-icon">🏦</div>
+                    <div class="method-info">
+                        <h4>Net Banking</h4>
+                        <p>All major banks supported</p>
+                    </div>
+                </div>
+                <div class="method-right">
+                    <div class="radio-button"></div>
+                </div>
+            </div>
+
+            <div class="payment-method" onclick="selectPaymentMethod(this, 'wallet')">
+                <div class="method-left">
+                    <div class="method-icon wallet-icon">👛</div>
+                    <div class="method-info">
+                        <h4>Wallets</h4>
+                        <p>Paytm, PhonePe & more</p>
+                    </div>
+                </div>
+                <div class="method-right">
+                    <div class="radio-button"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="security-info">
+            <div class="security-icon">🔒</div>
+            <div class="security-text">
+                <h4>Secure Payment</h4>
+                <p>Your payment information is encrypted and secure</p>
+            </div>
+        </div>
+
+        <button class="payment-button" onclick="processPayment()">
+            Pay ₹499 Securely
+        </button>
+
+        <div class="terms">
+            By continuing, you agree to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+        </div>
+
+        <div class="powered-by">
+            Powered by Razorpay • Secured with 256-bit SSL
+        </div>
+    </div>
+
+    <script>
+        function selectPaymentMethod(element, method) {
+            // Remove selected class from all methods
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            // Hide all details
+            document.querySelectorAll('.upi-details').forEach(el => {
+                el.classList.remove('show');
+            });
+            
+            // Add selected class to clicked method
+            element.classList.add('selected');
+            
+            // Show UPI details if UPI is selected
+            if (method === 'upi') {
+                document.querySelector('.upi-details').classList.add('show');
+            }
+            
+            // Update button text based on selected method
+            const button = document.querySelector('.payment-button');
+            switch(method) {
+                case 'upi':
+                    button.textContent = 'Pay ₹499 with UPI';
+                    break;
+                case 'cards':
+                    button.textContent = 'Pay ₹499 with Card';
+                    break;
+                case 'netbanking':
+                    button.textContent = 'Pay ₹499 with Net Banking';
+                    break;
+                case 'wallet':
+                    button.textContent = 'Pay ₹499 with Wallet';
+                    break;
+                default:
+                    button.textContent = 'Pay ₹499 Securely';
+            }
+        }
+
+        function processPayment() {
+            const selectedMethod = document.querySelector('.payment-method.selected');
+            if (!selectedMethod) {
+                alert('Please select a payment method');
+                return;
+            }
+            
+            // Add loading state
+            const button = document.querySelector('.payment-button');
+            const originalText = button.textContent;
+            button.textContent = 'Processing...';
+            button.style.background = 'linear-gradient(135deg, #86868b, #86868b)';
+            button.disabled = true;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                alert('Payment initiated! You will be redirected to the payment gateway.');
+                button.textContent = originalText;
+                button.style.background = 'linear-gradient(135deg, var(--primary-blue), var(--primary-purple))';
+                button.disabled = false;
+            }, 2000);
+        }
+
+        // Add ripple effect to payment methods
+        document.querySelectorAll('.payment-method').forEach(method => {
+            method.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(0, 122, 255, 0.3)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.pointerEvents = 'none';
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add entrance animation
+        window.addEventListener('load', () => {
+            const container = document.querySelector('.payment-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(30px) scale(0.9)';
+            container.style.transition = 'all 0.6s cubic-bezier(0.4, 0.0, 0.2, 1)';
+            
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0) scale(1)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,8 +1,7 @@
 package com.webapp.mocker;
 
 import jakarta.persistence.*;
-import java.util.List;
-import com.webapp.mocker.models.UserTestAccess;
+
 
 @Entity
 @Table
@@ -23,10 +22,8 @@ public class User {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "is_premium")
     private boolean isPremium = false;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserTestAccess> testAttempts;
 
     // Getters and setters
     public Long getId() { return id; }
@@ -41,6 +38,4 @@ public class User {
     public void setName(String name) { this.name = name; }
     public boolean isPremium() { return isPremium; }
     public void setPremium(boolean premium) { isPremium = premium; }
-    public List<UserTestAccess> getTestAttempts() { return testAttempts; }
-    public void setTestAttempts(List<UserTestAccess> testAttempts) { this.testAttempts = testAttempts; }
 } 

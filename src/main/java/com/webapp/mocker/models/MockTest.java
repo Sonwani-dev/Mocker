@@ -6,8 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "mock_tests")
 public class MockTest {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // Will be manually set as topicId + testNumber (e.g., 11, 12, 13 for topic 1)
 
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)
@@ -18,6 +17,18 @@ public class MockTest {
 
     private String name; // Optional: e.g. "Mock Test 1"
     private String description; // Optional
+    
+    @Column(name = "duration_minutes")
+    private Integer durationMinutes; // Duration in minutes
+    
+    @Column(name = "number_of_questions")
+    private Integer numberOfQuestions; // Number of questions in the test
+    
+    @Column(name = "completion_percent")
+    private Integer completionPercent; // Completion percentage (0-100)
+
+    @Column(name = "theory_text", columnDefinition = "TEXT")
+    private String theoryText;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -34,4 +45,16 @@ public class MockTest {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    
+    public Integer getDurationMinutes() { return durationMinutes; }
+    public void setDurationMinutes(Integer durationMinutes) { this.durationMinutes = durationMinutes; }
+    
+    public Integer getNumberOfQuestions() { return numberOfQuestions; }
+    public void setNumberOfQuestions(Integer numberOfQuestions) { this.numberOfQuestions = numberOfQuestions; }
+    
+    public Integer getCompletionPercent() { return completionPercent; }
+    public void setCompletionPercent(Integer completionPercent) { this.completionPercent = completionPercent; }
+
+    public String getTheoryText() { return theoryText; }
+    public void setTheoryText(String theoryText) { this.theoryText = theoryText; }
 } 

@@ -2,93 +2,197 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MockTest Platform</title>
+    <title>MockTestPro - Theme Selector</title>
     <!-- Link to CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Link to JavaScript -->
+    <script src="${pageContext.request.contextPath}/resources/js/theme.js"></script>
 </head>
-<body>
+<body class="theme-gradient index-page">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+    </div>
+
+    <!-- Include Navbar -->
     <jsp:include page="navbar.jsp" />
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <div class="hero-text">
-                <h1>Elevate Your Exam Prep<br><span class="accent">With Confidence</span></h1>
-                <p>Interactive mock tests, smart analytics, and personalized recommendations to boost your scores.</p>
-                <div class="hero-buttons">
-                    <a href="${pageContext.request.contextPath}/mock-tests" class="btn btn-primary">Start Free Test</a>
-                    <a href="${pageContext.request.contextPath}/pricing" class="btn btn-secondary">View Pricing</a>
-                </div>
+    <section class="hero" id="home">
+        <div class="hero-container">
+            <h1>Elevate Your Exam Prep</h1>
+            <p class="hero-subtitle">Master Physical Education with AI-powered analytics, personalized recommendations, and comprehensive mock tests</p>
+            
+            <div class="cta-container">
+                <a href="${pageContext.request.contextPath}/login" class="btn-primary">
+                    Start Free Test
+                    <span>&rarr;</span>
+                </a>
+                <a href="#pricing" class="btn-secondary">View Pricing</a>
             </div>
-            <div class="hero-image">
-                <img src="${pageContext.request.contextPath}/resources/images/hero-illustration.svg" alt="Exam Prep Illustration">
-            </div>
-        </div>
-    </section>
 
-    <!-- Features Section -->
-    <section class="features section">
-        <div class="container">
-            <div class="section-header">
-                <h2>Our Key Features</h2>
-                <p>Everything you need for a winning preparation strategy.</p>
-                <!-- Pricing button removed as requested -->
-            </div>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/free-tests.png" alt="Free Mock Tests">
-                    <h3>Free Mock Tests</h3>
-                    <p>Instant access to topic-wise free tests to gauge your strengths.</p>
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Active Students</div>
                 </div>
-                <div class="feature-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/analytics.png" alt="Deep Analytics">
-                    <h3>Deep Analytics</h3>
-                    <p>Visualize performance, time metrics, and accuracy trends.</p>
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Mock Tests</div>
                 </div>
-                <div class="feature-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/previous-papers.png" alt="Previous Year Papers">
-                    <h3>Prev. Year Papers</h3>
-                    <p>Practice with real past papers to familiarize with exam patterns.</p>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Success Rate</div>
                 </div>
-                <div class="feature-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/ai-suggest.png" alt="AI Recommendations">
-                    <h3>AI Recommendations</h3>
-                    <p>Get dynamic topic suggestions to strengthen weak areas.</p>
+                <div class="stat-card">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">Rating</div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Testimonials Section -->
-    <section class="testimonials section">
-        <div class="container">
-            <div class="section-header">
-                <h2>What Our Users Say</h2>
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Features Section -->
+        <section class="features">
+            <div class="features-container">
+                <h2 class="section-title">Why Choose MockTestPro?</h2>
+                <p class="section-subtitle">Everything you need for a winning preparation strategy</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128202;</div>
+                        <h3>Deep Analytics</h3>
+                        <p>Visualize performance patterns, identify knowledge gaps, and track your accuracy trends with comprehensive AI-powered insights.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">&#127919;</div>
+                        <h3>AI Recommendations</h3>
+                        <p>Get dynamic, topic-based suggestions powered by machine learning to strengthen your weak areas and optimize study time.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">&#128218;</div>
+                        <h3>Previous Year Papers</h3>
+                        <p>Practice with authentic past papers to understand exam patterns, question types, and boost your confidence.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">&#9889;</div>
+                        <h3>Instant Results</h3>
+                        <p>Receive immediate feedback with detailed explanations, solution steps, and performance metrics for every question.</p>
+                    </div>
+                </div>
             </div>
-            <div class="testimonials-slider">
-                <div class="testimonial-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/user-priya.png" alt="Priya Sharma">
-                    <p>"MockTestPro transformed my prep! The analytics helped me focus on weak topics and improved my score by 20%!"</p>
-                    <h4> Priya Sharma</h4>
-                </div>
-                <div class="testimonial-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/user-rahul.png" alt="Rahul Kumar">
-                    <p>"Loved the previous year papers section. Real exam feel and great explanations."</p>
-                    <h4> Rahul Kumar</h4>
-                </div>
-                <div class="testimonial-card">
-                    <img src="${pageContext.request.contextPath}/resources/images/user-sneha.png" alt="Sneha Patel">
-                    <p>"The AI suggestions are spot on. It guided me through personalized practice."</p>
-                    <h4> Sneha Patel</h4>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
+        <!-- Subjects Section -->
+        <section class="subjects" id="subjects">
+            <!-- Background Image Container -->
+            <div class="subjects-background">
+                <div class="subjects-bg-image" id="subjectsBgImage"></div>
+                <div class="subjects-overlay"></div>
+            </div>
+            
+            <div class="subjects-container">
+                <h2 class="section-title">Physical Education Topics</h2>
+                <p class="section-subtitle">Comprehensive coverage of all essential PE concepts</p>
+                
+                <div class="subjects-grid">
+                    <div class="subject-card">
+                        <h4>First Aid Basics</h4>
+                        <p>Cover essential knowledge of first aid techniques and emergency response procedures</p>
+                        <span class="topic-count">12 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Human Anatomy in Sports</h4>
+                        <p>Understanding major body systems, joints, and movement mechanics in sports</p>
+                        <span class="topic-count">15 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Fitness & Training Methods</h4>
+                        <p>Cover training types, fitness testing methodologies, and program planning</p>
+                        <span class="topic-count">18 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Sports Rules & Regulations</h4>
+                        <p>Rules and scoring systems for common sports like football, basketball, and more</p>
+                        <span class="topic-count">20 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Psychology in Sports</h4>
+                        <p>Mental preparation, motivation techniques, and concentration in athletics</p>
+                        <span class="topic-count">10 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Nutrition for Athletes</h4>
+                        <p>Balanced diet principles, supplements, and hydration strategies in sports</p>
+                        <span class="topic-count">8 Topics</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="pricing">
+            <div class="pricing-container">
+                <h2 class="section-title" id="pricing">Choose Your Plan</h2>
+                <p class="section-subtitle">Flexible pricing options designed for every student's needs</p>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">&#8377;0</div>
+                        <div class="period">Forever</div>
+                        <ul class="pricing-features">
+                            <li>1 Mock test per topic</li>
+                            <li>Basic score analysis</li>
+                            <li>Limited practice questions</li>
+                            <li>Community support</li>
+                        </ul>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn secondary">Get Started</a>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <h3>Pro</h3>
+                        <div class="price">&#8377;499</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Unlimited mock papers</li>
+                            <li>Detailed explanations</li>
+                            <li>Advanced analytics</li>
+                            <li>Custom test creator</li>
+                            <li>AI recommendations</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn featured">Choose Pro</a>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <h3>Ultimate</h3>
+                        <div class="price">&#8377;999</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Everything in Pro</li>
+                            <li>Previous year papers</li>
+                            <li>Live doubt chat</li>
+                            <li>1-on-1 mentorship</li>
+                            <li>Offline access</li>
+                            <li>Performance insights</li>
+                        </ul>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn primary">Choose Ultimate</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Include Footer -->
     <jsp:include page="footer.jsp" />
 </body>
 </html>

@@ -1,15 +1,17 @@
 package com.webapp.mocker;
 
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AuthController {
@@ -62,11 +64,12 @@ public class AuthController {
     public String loginUser(@RequestParam String username,
                             @RequestParam String password,
                             Model model,
-                            HttpSession session) {
+                            HttpSession session,
+                            HttpServletRequest request,
+                            HttpServletResponse response) {
         User user = userRepository.findByUsername(username);
         if (user == null || !user.getPassword().equals(password)) {
-            model.addAttribute("error", "Invalid username or password");
-            return "login";
+            return "redirect:/login?error=Invalid%20username%20or%20password";
         }
         session.setAttribute("username", username);
         session.setAttribute("name", user.getName());

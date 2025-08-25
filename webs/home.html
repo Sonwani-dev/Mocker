@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockTestPro - Theme Selector</title>
+
+</head>
+<body class="theme-gradient">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+    </div>
+
+    <!-- Navigation with Integrated Theme Selector -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="logo">MockTestPro</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#subjects">Subjects</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+            </ul>
+            <div class="nav-actions">
+                <div class="theme-selector">
+                    <div class="theme-indicator active" id="themeIndicator"></div>
+                    <div class="theme-dropdown" id="themeDropdown">
+                        <div class="theme-grid">
+                            <button class="theme-option active" onclick="setTheme('gradient', this)" title="Gradient" data-theme="gradient"></button>
+                            <button class="theme-option" onclick="setTheme('dark', this)" title="Dark Mode" data-theme="dark"></button>
+                            <button class="theme-option" onclick="setTheme('minimal', this)" title="Minimalist" data-theme="minimal"></button>
+                            <button class="theme-option" onclick="setTheme('neon', this)" title="Neon Cyber" data-theme="neon"></button>
+                            <button class="theme-option" onclick="setTheme('nature', this)" title="Nature" data-theme="nature"></button>
+                            <button class="theme-option" onclick="setTheme('warm', this)" title="Warm Sunset" data-theme="warm"></button>
+                        </div>
+                        <div class="theme-label">Choose Theme</div>
+                    </div>
+                </div>
+                <button class="login-btn">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <h1>Elevate Your Exam Prep</h1>
+            <p class="hero-subtitle">Master Physical Education with AI-powered analytics, personalized recommendations, and comprehensive mock tests</p>
+            
+            <div class="cta-container">
+                <a href="#" class="btn-primary">
+                    Start Free Test
+                    <span>→</span>
+                </a>
+                <a href="#" class="btn-secondary">View Pricing</a>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <div class="stat-number">50K+</div>
+                    <div class="stat-label">Active Students</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Mock Tests</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">4.9</div>
+                    <div class="stat-label">Rating</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Features Section -->
+        <section class="features">
+            <div class="features-container">
+                <h2 class="section-title">Why Choose MockTestPro?</h2>
+                <p class="section-subtitle">Everything you need for a winning preparation strategy</p>
+                
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>Deep Analytics</h3>
+                        <p>Visualize performance patterns, identify knowledge gaps, and track your accuracy trends with comprehensive AI-powered insights.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎯</div>
+                        <h3>AI Recommendations</h3>
+                        <p>Get dynamic, topic-based suggestions powered by machine learning to strengthen your weak areas and optimize study time.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Previous Year Papers</h3>
+                        <p>Practice with authentic past papers to understand exam patterns, question types, and boost your confidence.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Instant Results</h3>
+                        <p>Receive immediate feedback with detailed explanations, solution steps, and performance metrics for every question.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subjects Section -->
+        <section class="subjects">
+            <div class="subjects-container">
+                <h2 class="section-title">Physical Education Topics</h2>
+                <p class="section-subtitle">Comprehensive coverage of all essential PE concepts</p>
+                
+                <div class="subjects-grid">
+                    <div class="subject-card">
+                        <h4>First Aid Basics</h4>
+                        <p>Cover essential knowledge of first aid techniques and emergency response procedures</p>
+                        <span class="topic-count">12 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Human Anatomy in Sports</h4>
+                        <p>Understanding major body systems, joints, and movement mechanics in sports</p>
+                        <span class="topic-count">15 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Fitness & Training Methods</h4>
+                        <p>Cover training types, fitness testing methodologies, and program planning</p>
+                        <span class="topic-count">18 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Sports Rules & Regulations</h4>
+                        <p>Rules and scoring systems for common sports like football, basketball, and more</p>
+                        <span class="topic-count">20 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Psychology in Sports</h4>
+                        <p>Mental preparation, motivation techniques, and concentration in athletics</p>
+                        <span class="topic-count">10 Topics</span>
+                    </div>
+                    <div class="subject-card">
+                        <h4>Nutrition for Athletes</h4>
+                        <p>Balanced diet principles, supplements, and hydration strategies in sports</p>
+                        <span class="topic-count">8 Topics</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section class="pricing">
+            <div class="pricing-container">
+                <h2 class="section-title">Choose Your Plan</h2>
+                <p class="section-subtitle">Flexible pricing options designed for every student's needs</p>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">₹0</div>
+                        <div class="period">Forever</div>
+                        <ul class="pricing-features">
+                            <li>1 Mock test per topic</li>
+                            <li>Basic score analysis</li>
+                            <li>Limited practice questions</li>
+                            <li>Community support</li>
+                        </ul>
+                        <button class="pricing-btn secondary">Get Started</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <h3>Pro</h3>
+                        <div class="price">₹499</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Unlimited mock papers</li>
+                            <li>Detailed explanations</li>
+                            <li>Advanced analytics</li>
+                            <li>Custom test creator</li>
+                            <li>AI recommendations</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button class="pricing-btn featured">Choose Pro</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <h3>Ultimate</h3>
+                        <div class="price">₹999</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Everything in Pro</li>
+                            <li>Previous year papers</li>
+                            <li>Live doubt chat</li>
+                            <li>1-on-1 mentorship</li>
+                            <li>Offline access</li>
+                            <li>Performance insights</li>
+                        </ul>
+                        <button class="pricing-btn primary">Choose Ultimate</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let isDropdownOpen = false;
+
+        function setTheme(theme, element) {
+            // Remove all theme classes
+            document.body.classList.remove('theme-gradient', 'theme-dark', 'theme-minimal', 'theme-neon', 'theme-nature', 'theme-warm');
+            
+            // Add selected theme class
+            document.body.classList.add('theme-' + theme);
+            
+            // Update active button
+            document.querySelectorAll('.theme-option').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Update theme indicator
+            updateThemeIndicator(theme);
+            
+            // Store theme preference (Note: localStorage not available in Claude artifacts)
+            
+            // Add transition effect
+            document.body.style.transition = 'all 0.5s cubic-bezier(0.4, 0.0, 0.2, 1)';
+            setTimeout(() => {
+                document.body.style.transition = '';
+            }, 500);
+
+            // Close dropdown
+            closeThemeDropdown();
+        }
+
+        function updateThemeIndicator(theme) {
+            const indicator = document.getElementById('themeIndicator');
+            const themeColors = {
+                'gradient': 'linear-gradient(135deg, #667eea, #764ba2)',
+                'dark': 'linear-gradient(135deg, #1a1a1a, #2d2d2d)',
+                'minimal': 'linear-gradient(135deg, #ffffff, #f8f9fa)',
+                'neon': 'linear-gradient(135deg, #0f0f23, #ff006e)',
+                'nature': 'linear-gradient(135deg, #2d5016, #a8e6cf)',
+                'warm': 'linear-gradient(135deg, #ff9a56, #ffad56)'
+            };
+            
+            indicator.style.background = themeColors[theme];
+            
+            if (theme === 'minimal') {
+                indicator.style.border = '2px solid rgba(0, 0, 0, 0.2)';
+            } else {
+                indicator.style.border = '2px solid rgba(255, 255, 255, 0.3)';
+            }
+        }
+
+        function toggleThemeDropdown() {
+            const dropdown = document.getElementById('themeDropdown');
+            isDropdownOpen = !isDropdownOpen;
+            
+            if (isDropdownOpen) {
+                dropdown.classList.add('show');
+            } else {
+                dropdown.classList.remove('show');
+            }
+        }
+
+        function closeThemeDropdown() {
+            const dropdown = document.getElementById('themeDropdown');
+            dropdown.classList.remove('show');
+            isDropdownOpen = false;
+        }
+
+        // Event listeners
+        document.getElementById('themeIndicator').addEventListener('click', toggleThemeDropdown);
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const themeSelector = document.querySelector('.theme-selector');
+            if (!themeSelector.contains(e.target)) {
+                closeThemeDropdown();
+            }
+        });
+
+        // Prevent dropdown from closing when clicking inside
+        document.getElementById('themeDropdown').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // Load default theme on page load
+        window.addEventListener('load', () => {
+            updateThemeIndicator('gradient');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Card hover effects
+        document.querySelectorAll('.feature-card, .subject-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-12px) scale(1.02)';
+                this.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '';
+            });
+        });
+
+        // Pricing card interactions
+        document.querySelectorAll('.pricing-card:not(.featured)').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-12px) scale(1.02)';
+                this.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.15)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+                this.style.boxShadow = '';
+            });
+        });
+
+        // Dynamic navigation blur based on scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('.nav');
+            const scrollY = window.scrollY;
+            
+            if (scrollY > 100) {
+                nav.style.backdropFilter = 'blur(60px)';
+                nav.style.background = 'var(--glass-bg)';
+            } else {
+                nav.style.backdropFilter = 'blur(40px)';
+            }
+        });
+
+        // Parallax effect for floating elements
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = document.querySelector('.floating-elements');
+            if (parallax) {
+                const rate = scrolled * -0.3;
+                parallax.style.transform = `translateY(${rate}px)`;
+            }
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.8s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Button ripple effect
+        document.querySelectorAll('.btn-primary, .btn-secondary, .login-btn, .pricing-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    border-radius: 50%;
+                    background: rgba(255, 255, 255, 0.6);
+                    transform: scale(0);
+                    animation: ripple 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add ripple animation keyframes
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Theme-specific hover effects
+        function updateThemeSpecificEffects() {
+            const currentTheme = document.body.className.match(/theme-(\w+)/)?.[1];
+            
+            if (currentTheme === 'neon') {
+                document.querySelectorAll('.feature-card, .subject-card').forEach(card => {
+                    card.addEventListener('mouseenter', function() {
+                        this.style.boxShadow = '0 0 40px rgba(255, 0, 110, 0.3), 0 20px 60px rgba(0, 0, 0, 0.15)';
+                    });
+                });
+            }
+        }
+
+        // Initialize theme-specific effects
+        setTimeout(updateThemeSpecificEffects, 100);
+
+        // Enhanced keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isDropdownOpen) {
+                closeThemeDropdown();
+            }
+        });
+
+        // Touch support for mobile
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const deltaY = touchStartY - touchEndY;
+            
+            // Close dropdown on swipe up (mobile gesture)
+            if (deltaY > 50 && isDropdownOpen) {
+                closeThemeDropdown();
+            }
+        });
+    </script>
+</body>
+</html>

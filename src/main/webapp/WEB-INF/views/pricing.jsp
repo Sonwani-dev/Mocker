@@ -7,132 +7,116 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - MockTestPro</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/pricing.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/pricing.css">
-    <style>
-        body { padding-top: 48px; padding-bottom: 48px; }
-    </style>
 </head>
-<body>
-    <jsp:include page="navbar.jsp" />
-    <div class="container">
-        <h1 style="text-align:center; margin-top:2rem;">Choose Your Plan</h1>
-        <table class="pricing-table">
-            <thead>
-                <tr>
-                    <th>Feature</th>
-                    <th>Free</th>
-                    <th>Starter<br><span style='font-size:0.9em;color:#888;'>₹199/month</span></th>
-                    <th>Pro<br><span style='font-size:0.9em;color:#888;'>₹499/month</span></th>
-                    <th>Ultimate<br><span style='font-size:0.9em;color:#888;'>₹999/month</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr class="feature-row">
-                    <td>Topic-wise Mock Papers</td>
-                    <td>Limited (1 per topic)</td>
-                    <td>20 mock papers</td>
-                    <td>Unlimited</td>
-                    <td>Unlimited</td>
-                </tr>
-                <tr class="feature-row">
-                    <td>Previous Year Papers</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10004;</td>
-                </tr>
-                <tr class="feature-row">
-                    <td>Answer Explanations</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10004;</td>
-                    <td>&#10004;</td>
-                </tr>
-                <tr class="feature-row">
-                    <td>Performance Analysis</td>
-                    <td>Basic (only score)</td>
-                    <td>Basic</td>
-                    <td>Advanced (topic strength/weakness)</td>
-                    <td>Advanced (topic strength/weakness)</td>
-                </tr>
-                <tr class="feature-row">
-                    <td>Custom Mock Test Creator</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10004;</td>
-                    <td>&#10004;</td>
-                </tr>
-                <tr class="feature-row">
-                    <td>Adaptive Learning Suggestions</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10004;</td>
-                    <td>&#10004; (AI recommends weak topics)</td>
-                </tr>
-                <tr class="feature-row">
-                    <td>Live Doubt Chat</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10060;</td>
-                    <td>&#10004;</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><button class="btn-upgrade" style="width:100%;">Get Started</button></td>
-                    <td><button id="buy-starter-btn" class="btn-upgrade" style="width:100%;">Buy Starter</button></td>
-                    <td><button class="btn-upgrade" style="width:100%;">Buy Pro</button></td>
-                    <td><button class="btn-upgrade" style="width:100%;">Buy Ultimate</button></td>
-                </tr>
-            </tbody>
-        </table>
+<body class="theme-gradient">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
     </div>
+
+    <jsp:include page="navbar.jsp" />
+
+    <div class="main-content">
+        <section class="pricing">
+            <div class="pricing-container">
+                <h2 class="section-title" id="pricing">Choose Your Plan</h2>
+                <p class="section-subtitle">Flexible pricing options designed for every student's needs</p>
+                
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <h3>Free</h3>
+                        <div class="price">&#8377;0</div>
+                        <div class="period">Forever</div>
+                        <ul class="pricing-features">
+                            <li>1 Mock test per topic</li>
+                            <li>Basic score analysis</li>
+                            <li>Limited practice questions</li>
+                            <li>Community support</li>
+                        </ul>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn secondary">Get Started</a>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <h3>Pro</h3>
+                        <div class="price">&#8377;499</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Unlimited mock papers</li>
+                            <li>Detailed explanations</li>
+                            <li>Advanced analytics</li>
+                            <li>Custom test creator</li>
+                            <li>AI recommendations</li>
+                            <li>Priority support</li>
+                        </ul>
+                        <button id="buy-pro-btn" class="pricing-btn featured">Choose Pro</button>
+                    </div>
+                    
+                    <div class="pricing-card">
+                        <h3>Ultimate</h3>
+                        <div class="price">&#8377;999</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Everything in Pro</li>
+                            <li>Previous year papers</li>
+                            <li>Live doubt chat</li>
+                            <li>1-on-1 mentorship</li>
+                            <li>Offline access</li>
+                            <li>Performance insights</li>
+                        </ul>
+                        <button id="buy-ultimate-btn" class="pricing-btn primary">Choose Ultimate</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <jsp:include page="footer.jsp" />
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
-    document.getElementById('buy-starter-btn').onclick = function(e) {
-        e.preventDefault();
+    (function(){
+        function buy(planId) {
         var loggedIn = "<%= loggedIn %>" === "true";
-        console.log('Logged in:', loggedIn);
         if (!loggedIn) {
             window.location.href = "${pageContext.request.contextPath}/login";
             return;
         }
-        fetch('/create-order?planId=1', { method: 'POST' })
-        .then(res => {
-            console.log('create-order response:', res);
-            if (!res.ok) { throw new Error('Order creation failed'); }
-            return res.json();
-        })
+            fetch(`${pageContext.request.contextPath}/create-order?planId=${planId}`, { method: 'POST', credentials: 'include' })
+            .then(res => { if (!res.ok) throw new Error('Order creation failed'); return res.json(); })
         .then(data => {
             var options = {
-                "key": "rzp_test_juGDlBGq2m7P9a", // Replace with your Razorpay key
-                "amount": "19900", // Or get from plan
-                "currency": "INR",
-                "name": "MockTestPro",
-                "order_id": data.orderId,
-                "handler": function (response){
-                    fetch('/payment-success', {
+                    key: 'rzp_test_juGDlBGq2m7P9a',
+                    order_id: data.orderId,
+                    handler: function (response){
+                        fetch('${pageContext.request.contextPath}/payment-success', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                            credentials: 'include',
+                            headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             razorpay_payment_id: response.razorpay_payment_id,
                             razorpay_order_id: response.razorpay_order_id,
                             signature: response.razorpay_signature,
-                            planId: 1 // Use actual planId
-                        })
-                    }).then(() => window.location.href = "/pe-subjects");
-                }
-            };
-            var rzp1 = new Razorpay(options);
-            rzp1.open();
-        })
-        .catch(err => {
-            console.error(err);
-        });
-    };
+                                planId: planId
+                            })
+                        }).then(() => window.location.href = "${pageContext.request.contextPath}/pe-subjects");
+                    }
+                };
+                new Razorpay(options).open();
+            })
+            .catch(console.error);
+        }
+        var proBtn = document.getElementById('buy-pro-btn');
+        if (proBtn) proBtn.addEventListener('click', function(e){ e.preventDefault(); buy(1); });
+        var ultimateBtn = document.getElementById('buy-ultimate-btn');
+        if (ultimateBtn) ultimateBtn.addEventListener('click', function(e){ e.preventDefault(); buy(2); });
+    })();
     </script>
 </body>
 </html> 

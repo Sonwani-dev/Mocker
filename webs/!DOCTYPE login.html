@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MockTestPro - Sign In</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-blue: #007AFF;
+            --primary-purple: #5856D6;
+            --dark-blue: #1d1d1f;
+            --light-gray: #f5f5f7;
+            --medium-gray: #86868b;
+            --white: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-heavy: rgba(0, 0, 0, 0.25);
+            --success-green: #34C759;
+            --error-red: #FF3B30;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Floating Background Elements */
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .float-element {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            border-radius: 50%;
+            animation: float 25s infinite linear;
+        }
+
+        .float-element:nth-child(1) { width: 100px; height: 100px; top: 10%; left: 20%; animation-delay: 0s; }
+        .float-element:nth-child(2) { width: 60px; height: 60px; top: 70%; left: 80%; animation-delay: 8s; }
+        .float-element:nth-child(3) { width: 80px; height: 80px; top: 50%; left: 10%; animation-delay: 16s; }
+        .float-element:nth-child(4) { width: 120px; height: 120px; top: 20%; left: 70%; animation-delay: 24s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
+            50% { transform: translateY(-100px) rotate(180deg); opacity: 1; }
+            100% { transform: translateY(0px) rotate(360deg); opacity: 0.7; }
+        }
+
+        /* Page Selector */
+        .page-selector {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 8px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .page-btn {
+            padding: 8px 16px;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .page-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeInScale 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* Login/Register Forms */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 32px;
+            padding: 48px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 32px 100px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .auth-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 40px 120px rgba(0, 0, 0, 0.25);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            color: var(--medium-gray);
+            font-size: 16px;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-blue);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--dark-blue);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--error-red);
+            box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.1);
+        }
+
+        .form-input.success {
+            border-color: var(--success-green);
+            box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.1);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 12px;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+            color: white;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 122, 255, 0.3);
+            margin-bottom: 16px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 122, 255, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--dark-blue);
+            padding: 16px 24px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Social Login */
+        .social-login {
+            margin: 32px 0;
+        }
+
+        .divider {
+            text-align: center;
+            position: relative;
+            margin: 24px 0;
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+            z-index: 1;
+        }
+
+        .divider span {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 0 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .social-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: var(--dark-blue);
+        }
+
+        .social-btn:hover {
+            background: rgba(0, 0, 0, 0.02);
+            transform: translateY(-1px);
+        }
+
+        /* Links */
+        .auth-links {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .auth-links a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .auth-links a:hover {
+            color: var(--primary-purple);
+        }
+
+        /* Remember & Forgot */
+        .form-extras {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            font-size: 14px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary-blue);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Success/Error Messages */
+        .message {
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(52, 199, 89, 0.1);
+            color: var(--success-green);
+            border: 1px solid rgba(52, 199, 89, 0.2);
+        }
+
+        .message.error {
+            background: rgba(255, 59, 48, 0.1);
+            color: var(--error-red);
+            border: 1px solid rgba(255, 59, 48, 0.2);
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 32px 24px;
+                margin: 0 16px;
+            }
+            
+            .page-selector {
+                left: 20px;
+                right: 20px;
+                transform: none;
+                max-width: calc(100% - 40px);
+            }
+        }
+
+        /* Animations */
+        .slide-in {
+            animation: slideIn 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+        <div class="float-element"></div>
+    </div>
+
+    <!-- Page Selector -->
+    <div class="page-selector">
+        <button class="page-btn active" data-page="login">Login</button>
+        <button class="page-btn" data-page="register">Register</button>
+        <button class="page-btn" data-page="forgot">Reset Password</button>
+        <button class="page-btn" data-page="otp">OTP Verify</button>
+    </div>
+
+    <div class="container">
+        <!-- Login Page -->
+        <div class="page active" id="login">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="logo">MockTestPro</div>
+                        <h1 class="auth-title">Welcome Back</h1>
+                        <p class="auth-subtitle">Sign in to continue your exam preparation</p>
+                    </div>
+
+                    <div class="message" id="login-message"></div>
+
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label class="form-label">Email or Phone</label>
+                            <input type="text" class="form-input" id="login-email" placeholder="Enter your email or phone number" required>
+                            <div class="error-message">Please enter a valid email or phone number</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="login-password" placeholder="Enter your password" required>
+                            <div class="error-message">Password must be at least 6 characters</div>
+                        </div>
+
+                        <div class="form-extras">
+                            <div class="checkbox-group">
+                                <input type="checkbox" id="remember-me">
+                                <label for="remember-me">Remember me</label>
+                            </div>
+                            <a href="#" onclick="showPage('forgot')">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="login-btn">
+                            Sign In
+                        </button>
+                    </form>
+
+                    <div class="social-login">
+                        <div class="divider">
+                            <span>or continue with</span>
+                        </div>
+                        <div class="social-buttons">
+                            <button class="social-btn" onclick="socialLogin('google')">
+                                <span>🔍</span> Google
+                            </button>
+                            <button class="social-btn" onclick="socialLogin('apple')">
+                                <span>🍎</span> Apple
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="auth-links">
+                        Don't have an account? <a href="#" onclick="showPage('register')">Sign up</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Register Page -->
+        <div class="page" id="register">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="logo">MockTestPro</div>
+                        <h1 class="auth-title">Create Account</h1>
+                        <p class="auth-subtitle">Join thousands of successful students</p>
+                    </div>
+
+                    <div class="message" id="register-message"></div>
+
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-input" id="register-name" placeholder="Enter your full name" required>
+                            <div class="error-message">Please enter your full name</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" id="register-email" placeholder="Enter your email address" required>
+                            <div class="error-message">Please enter a valid email address</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-input" id="register-phone" placeholder="Enter your phone number" required>
+                            <div class="error-message">Please enter a valid phone number</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" class="form-input" id="register-password" placeholder="Create a strong password" required>
+                            <div class="error-message">Password must be at least 8 characters with uppercase, lowercase and number</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" class="form-input" id="register-confirm-password" placeholder="Confirm your password" required>
+                            <div class="error-message">Passwords do not match</div>
+                        </div>
+
+                        <div class="checkbox-group" style="margin-bottom: 24px;">
+                            <input type="checkbox" id="terms-check" required>
+                            <label for="terms-check">I agree to the <a href="#" style="color: var(--primary-blue);">Terms of Service</a> and <a href="#" style="color: var(--primary-blue);">Privacy Policy</a></label>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="register-btn">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="social-login">
+                        <div class="divider">
+                            <span>or sign up with</span>
+                        </div>
+                        <div class="social-buttons">
+                            <button class="social-btn" onclick="socialLogin('google')">
+                                <span>🔍</span> Google
+                            </button>
+                            <button class="social-btn" onclick="socialLogin('apple')">
+                                <span>🍎</span> Apple
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="auth-links">
+                        Already have an account? <a href="#" onclick="showPage('login')">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Forgot Password Page -->
+        <div class="page" id="forgot">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="logo">MockTestPro</div>
+                        <h1 class="auth-title">Reset Password</h1>
+                        <p class="auth-subtitle">Enter your email to receive reset instructions</p>
+                    </div>
+
+                    <div class="message" id="forgot-message"></div>
+
+                    <form id="forgot-form">
+                        <div class="form-group">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-input" id="forgot-email" placeholder="Enter your email address" required>
+                            <div class="error-message">Please enter a valid email address</div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="forgot-btn">
+                            Send Reset Link
+                        </button>
+                    </form>
+
+                    <div class="auth-links">
+                        Remember your password? <a href="#" onclick="showPage('login')">Sign in</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTP Verification Page -->
+        <div class="page" id="otp">
+            <div class="auth-container">
+                <div class="auth-card">
+                    <div class="auth-header">
+                        <div class="logo">MockTestPro</div>
+                        <h1 class="auth-title">Verify OTP</h1>
+                        <p class="auth-subtitle">Enter the 6-digit code sent to your phone</p>
+                    </div>
+
+                    <div class="message" id="otp-message"></div>
+
+                    <form id="otp-form">
+                        <div class="form-group">
+                            <label class="form-label">Verification Code</label>
+                            <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+                                <input type="text" class="otp-input" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 20px; font-weight: bold;">
+                                <input type="text" class="otp-input" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 20px; font-weight: bold;">
+                                <input type="text" class="otp-input" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 20px; font-weight: bold;">
+                                <input type="text" class="otp-input" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 20px; font-weight: bold;">
+                                <input type="text" class="otp-input" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 20px; font-weight: bold;">
+                                <input type="text" class="otp-input" maxlength="1" style="width: 50px; height: 50px; text-align: center; font-size: 20px; font-weight: bold;">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="otp-btn">
+                            Verify Code
+                        </button>
+
+                        <button type="button" class="btn-secondary" id="resend-btn">
+                            Resend Code (<span id="timer">60</span>s)
+                        </button>
+                    </form>
+
+                    <div class="auth-links">
+                        <a href="#" onclick="showPage('login')">Back to Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.page-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Add active class to corresponding button
+            document.querySelector([data-page="${pageId}"]).classList.add('active');
+        }
+
+        // Page selector event listeners
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                showPage(btn.dataset.page);
+            });
+        });
+
+        // Form Validation
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function validatePhone(phone) {
+            const re = /^[\+]?[1-9][\d]{0,15}$/;
+            return re.test(phone.replace(/\s/g, ''));
+        }
+
+        function validatePassword(password) {
+            return password.length >= 8 && /[A-Z]/.test(password) && /[a-z]/.test(password) && /\d/.test(password);
+        }
+
+        function showMessage(formId, message, type) {
+            const messageEl = document.getElementById(${formId}-message);
+            messageEl.textContent = message;
+            messageEl.className = message ${type} show;
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 5000);
+        }
+
+        function setLoading(btnId, loading) {
+            const btn = document.getElementById(btnId);
+            if (loading) {
+                btn.innerHTML = '<div class="loading"><span class="spinner"></span>Processing...</div>';
+                btn.disabled = true;
+            } else {
+                // Reset button text based on form
+                const originalTexts = {
+                    'login-btn': 'Sign In',
+                    'register-btn': 'Create Account',
+                    'forgot-btn': 'Send Reset Link',
+                    'otp-btn': 'Verify Code'
+                };
+                btn.innerHTML = originalTexts[btnId] || 'Submit';
+                btn.disabled = false;
+            }
+        }
+
+        // Login Form
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                showMessage('login', 'Please fill in all fields', 'error');
+                return;
+            }
+            
+            setLoading('login-btn', true);
+            
+            // Simulate API call
+            setTimeout(() => {
+                setLoading('login-btn', false);
+                if (email === 'demo@mocktestpro.com' && password === 'demo123') {
+                    showMessage('login', 'Login successful! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '#dashboard';
+                    }, 1500);
+                } else {
+                    showMessage('login', 'Invalid credentials. Try demo@mocktestpro.com / demo123', 'error');
+                }
+            }, 2000);
+        });
+
+        // Register Form
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            const termsAccepted = document.getElementById('terms-check').checked;
+            
+            if (!name || !email || !phone || !password || !confirmPassword) {
+                showMessage('register', 'Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (!validateEmail(email)) {
+                showMessage('register', 'Please enter a valid email address', 'error');
+                return;
+            }
+            
+            if (!validatePassword(password)) {
+                showMessage('register', 'Password must be at least 8 characters with uppercase, lowercase and number', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showMessage('register', 'Passwords do not match', 'error');
+                return;
+            }
+            
+            if (!termsAccepted) {
+                showMessage('register', 'Please accept the terms and conditions', 'error');
+                return;
+            }
+            
+            setLoading('register-btn', true);
+            
+            // Simulate API call
+            setTimeout(() => {
+                setLoading('register-btn', false);
+                showMessage('register', 'Account created successfully! Please verify your email.', 'success');
+                setTimeout(() => {
+                    showPage('otp');
+                }, 2000);
+            }, 2500);
+        });
+
+        // Forgot Password Form
+        document.getElementById('forgot-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('forgot-email
