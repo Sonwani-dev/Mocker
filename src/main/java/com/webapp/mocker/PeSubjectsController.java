@@ -318,22 +318,24 @@ public class PeSubjectsController {
     }
 
     private int computeAllowedTestsForUserAndTopic(User user, Topic topic, int totalTests) {
-        if (user == null) return Math.max(topic.getStarterUnlockedTests() != null ? topic.getStarterUnlockedTests() : 2, 0);
+        if (user == null) return Math.max(topic.getFreeUnlockedTests() != null ? topic.getFreeUnlockedTests() : 1, 0);
         List<com.webapp.mocker.models.UserPurchase> purchases = userPurchaseRepository.findActivePurchasesByUserId(user.getId());
         String planName = null;
         if (purchases != null && !purchases.isEmpty() && purchases.get(0).getPlan() != null) {
             planName = purchases.get(0).getPlan().getName();
         }
-        Integer starter = topic.getStarterUnlockedTests() != null ? topic.getStarterUnlockedTests() : 2;
-        Integer pro = topic.getProUnlockedTests() != null ? topic.getProUnlockedTests() : totalTests;
-        Integer ultimate = topic.getUltimateUnlockedTests() != null ? topic.getUltimateUnlockedTests() : totalTests;
+        Integer free = topic.getFreeUnlockedTests() != null ? topic.getFreeUnlockedTests() : 1;
+        Integer silver = topic.getSilverUnlockedTests() != null ? topic.getSilverUnlockedTests() : totalTests;
+        Integer gold = topic.getGoldUnlockedTests() != null ? topic.getGoldUnlockedTests() : totalTests;
+        Integer platinum = topic.getPlatinumUnlockedTests() != null ? topic.getPlatinumUnlockedTests() : totalTests;
         if (planName != null) {
-            if ("Ultimate".equalsIgnoreCase(planName)) return Math.min(ultimate, totalTests);
-            if ("Pro".equalsIgnoreCase(planName)) return Math.min(pro, totalTests);
-            return Math.min(starter, totalTests);
+            if ("Platinum".equalsIgnoreCase(planName)) return Math.min(platinum, totalTests);
+            if ("Gold".equalsIgnoreCase(planName)) return Math.min(gold, totalTests);
+            if ("Silver".equalsIgnoreCase(planName)) return Math.min(silver, totalTests);
+            return Math.min(free, totalTests);
         }
-        if (user.isPremium()) return Math.min(pro, totalTests);
-        return Math.min(starter, totalTests);
+        if (user.isPremium()) return Math.min(silver, totalTests);
+        return Math.min(free, totalTests);
     }
 
     private Set<Integer> selectRandomTestNumbersForUserTopic(User user, Topic topic, List<MockTest> tests, int allowed) {

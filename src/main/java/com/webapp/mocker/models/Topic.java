@@ -21,14 +21,17 @@ public class Topic {
     private String description; // For dashboard display
 
     // Per-package unlocked tests configuration
-    @Column(name = "starter_unlocked_tests")
-    private Integer starterUnlockedTests;
+    @Column(name = "free_unlocked_tests")
+    private Integer freeUnlockedTests;
 
-    @Column(name = "pro_unlocked_tests")
-    private Integer proUnlockedTests;
+    @Column(name = "silver_unlocked_tests")
+    private Integer silverUnlockedTests;
 
-    @Column(name = "ultimate_unlocked_tests")
-    private Integer ultimateUnlockedTests;
+    @Column(name = "gold_unlocked_tests")
+    private Integer goldUnlockedTests;
+
+    @Column(name = "platinum_unlocked_tests")
+    private Integer platinumUnlockedTests;
 
     // Getters and Setters
     public Long getId() { return id; }
@@ -43,12 +46,15 @@ public class Topic {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public Integer getStarterUnlockedTests() { return starterUnlockedTests; }
-    public void setStarterUnlockedTests(Integer starterUnlockedTests) { this.starterUnlockedTests = starterUnlockedTests; }
+    public Integer getFreeUnlockedTests() { return freeUnlockedTests; }
+    public void setFreeUnlockedTests(Integer freeUnlockedTests) { this.freeUnlockedTests = freeUnlockedTests; }
 
-    public Integer getProUnlockedTests() { return proUnlockedTests; }
-    public void setProUnlockedTests(Integer proUnlockedTests) { this.proUnlockedTests = proUnlockedTests; }
+    public Integer getSilverUnlockedTests() { return silverUnlockedTests; }
+    public void setSilverUnlockedTests(Integer silverUnlockedTests) { this.silverUnlockedTests = silverUnlockedTests; }
 
-    public Integer getUltimateUnlockedTests() { return ultimateUnlockedTests; }
-    public void setUltimateUnlockedTests(Integer ultimateUnlockedTests) { this.ultimateUnlockedTests = ultimateUnlockedTests; }
+    public Integer getGoldUnlockedTests() { return goldUnlockedTests; }
+    public void setGoldUnlockedTests(Integer goldUnlockedTests) { this.goldUnlockedTests = goldUnlockedTests; }
+
+    public Integer getPlatinumUnlockedTests() { return platinumUnlockedTests; }
+    public void setPlatinumUnlockedTests(Integer platinumUnlockedTests) { this.platinumUnlockedTests = platinumUnlockedTests; }
 } 

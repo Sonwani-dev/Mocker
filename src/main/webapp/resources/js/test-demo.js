@@ -44,8 +44,12 @@
     const remainingKey = mockTestId ? `mtp_remaining_${mockTestId}` : null;
 
     function renderQuestion(index) {
+        console.log('Rendering question at index:', index, 'questions length:', questions.length);
         const q = questions[index];
-        if (!q) return;
+        if (!q) {
+            console.log('No question found at index:', index);
+            return;
+        }
 
         answered = false;
         // While skip is available (unanswered), Next should be disabled per requirement
@@ -191,12 +195,15 @@
         // load config
         try {
             const base = document.body.getAttribute('data-ctx') || '';
+            console.log('Loading test data for mockTestId:', mockTestId);
             const [cfgRes, qRes] = await Promise.all([
                 fetch(`${base}/api/mocktest/${mockTestId}/config`),
                 fetch(`${base}/api/mocktest/${mockTestId}/questions`)
             ]);
             const cfg = await cfgRes.json();
             questions = await qRes.json();
+            console.log('Loaded config:', cfg);
+            console.log('Loaded questions:', questions);
 
             // Update timer and total from server if provided
             const cfgMinutes = parseInt(cfg.durationMinutes || durationMinutes, 10);
@@ -243,9 +250,9 @@
     });
 
     // Clear started flag when leaving via back link
-    const backLink = document.querySelector('.breadcrumbs .back-link');
-    if (backLink) {
-        backLink.addEventListener('click', () => {
+    const testBackLink = document.querySelector('.breadcrumbs .back-link');
+    if (testBackLink) {
+        testBackLink.addEventListener('click', () => {
             const startedKey = `mtp_started_${mockTestId}`;
             try { sessionStorage.removeItem(startedKey); } catch (e) {}
             try { if (remainingKey) sessionStorage.removeItem(remainingKey); } catch (e) {}

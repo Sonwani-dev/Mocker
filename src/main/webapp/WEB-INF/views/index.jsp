@@ -158,34 +158,48 @@
                         <a href="${pageContext.request.contextPath}/login" class="pricing-btn secondary">Get Started</a>
                     </div>
                     
-                    <div class="pricing-card featured">
-                        <h3>Pro</h3>
-                        <div class="price">&#8377;499</div>
+                    <div class="pricing-card">
+                        <h3>Silver</h3>
+                        <div class="price">&#8377;99</div>
                         <div class="period">per month</div>
                         <ul class="pricing-features">
                             <li>Unlimited mock papers</li>
                             <li>Detailed explanations</li>
+                            <li>Basic analytics</li>
+                            <li>Practice questions</li>
+                            <li>Email support</li>
+                        </ul>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn primary">Choose Silver</a>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <h3>Gold</h3>
+                        <div class="price">&#8377;199</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Everything in Silver</li>
                             <li>Advanced analytics</li>
                             <li>Custom test creator</li>
                             <li>AI recommendations</li>
                             <li>Priority support</li>
+                            <li>Performance insights</li>
                         </ul>
-                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn featured">Choose Pro</a>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn featured">Choose Gold</a>
                     </div>
                     
                     <div class="pricing-card">
-                        <h3>Ultimate</h3>
-                        <div class="price">&#8377;999</div>
+                        <h3>Platinum</h3>
+                        <div class="price">&#8377;299</div>
                         <div class="period">per month</div>
                         <ul class="pricing-features">
-                            <li>Everything in Pro</li>
+                            <li>Everything in Gold</li>
                             <li>Previous year papers</li>
                             <li>Live doubt chat</li>
                             <li>1-on-1 mentorship</li>
                             <li>Offline access</li>
-                            <li>Performance insights</li>
+                            <li>Premium support</li>
                         </ul>
-                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn primary">Choose Ultimate</a>
+                        <a href="${pageContext.request.contextPath}/login" class="pricing-btn primary">Choose Platinum</a>
                     </div>
                 </div>
             </div>

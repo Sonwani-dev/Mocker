@@ -52,10 +52,12 @@ public class HomeController {
 
     @GetMapping("/pricing")
     public String pricing(Model model) {
-        PremiumPlan proPlan = premiumPlanRepository.findByName("Pro");
-        PremiumPlan ultimatePlan = premiumPlanRepository.findByName("Ultimate");
-        model.addAttribute("proPlan", proPlan);
-        model.addAttribute("ultimatePlan", ultimatePlan);
+        PremiumPlan silverPlan = premiumPlanRepository.findByName("Silver");
+        PremiumPlan goldPlan = premiumPlanRepository.findByName("Gold");
+        PremiumPlan platinumPlan = premiumPlanRepository.findByName("Platinum");
+        model.addAttribute("silverPlan", silverPlan);
+        model.addAttribute("goldPlan", goldPlan);
+        model.addAttribute("platinumPlan", platinumPlan);
         return "pricing";
     }
 

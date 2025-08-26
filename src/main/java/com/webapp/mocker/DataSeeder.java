@@ -17,9 +17,10 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        ensurePlan("Starter", "Starter plan", new java.math.BigDecimal("0"), 30, 2);
-        ensurePlan("Pro", "Pro plan", new java.math.BigDecimal("499"), 30, null);
-        ensurePlan("Ultimate", "Ultimate plan", new java.math.BigDecimal("999"), 30, null);
+        ensurePlan("Free", "Free plan - 1 test per topic", new java.math.BigDecimal("0"), 30, 1);
+        ensurePlan("Silver", "Silver plan - unlimited tests", new java.math.BigDecimal("99"), 30, null);
+        ensurePlan("Gold", "Gold plan - premium features", new java.math.BigDecimal("199"), 30, null);
+        ensurePlan("Platinum", "Platinum plan - ultimate features", new java.math.BigDecimal("299"), 30, null);
     }
 
     private void ensurePlan(String name, String description, java.math.BigDecimal price, Integer durationDays, Integer maxTests) {
@@ -32,7 +33,7 @@ public class DataSeeder implements CommandLineRunner {
             plan.setDurationDays(durationDays);
             plan.setMaxTests(maxTests);
             premiumPlanRepository.save(plan);
-            System.out.println("[SEED] Created premium plan: " + name);
+            System.out.println("[INIT] Created premium plan: " + name);
         }
     }
 }

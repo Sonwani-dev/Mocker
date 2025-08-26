@@ -43,34 +43,48 @@
                         <a href="${pageContext.request.contextPath}/login" class="pricing-btn secondary">Get Started</a>
                     </div>
                     
-                    <div class="pricing-card featured">
-                        <h3>Pro</h3>
-                        <div class="price">&#8377;499</div>
+                    <div class="pricing-card">
+                        <h3>Silver</h3>
+                        <div class="price">&#8377;99</div>
                         <div class="period">per month</div>
                         <ul class="pricing-features">
                             <li>Unlimited mock papers</li>
                             <li>Detailed explanations</li>
+                            <li>Basic analytics</li>
+                            <li>Practice questions</li>
+                            <li>Email support</li>
+                        </ul>
+                        <button id="buy-silver-btn" class="pricing-btn primary">Choose Silver</button>
+                    </div>
+                    
+                    <div class="pricing-card featured">
+                        <h3>Gold</h3>
+                        <div class="price">&#8377;199</div>
+                        <div class="period">per month</div>
+                        <ul class="pricing-features">
+                            <li>Everything in Silver</li>
                             <li>Advanced analytics</li>
                             <li>Custom test creator</li>
                             <li>AI recommendations</li>
                             <li>Priority support</li>
+                            <li>Performance insights</li>
                         </ul>
-                        <button id="buy-pro-btn" class="pricing-btn featured">Choose Pro</button>
+                        <button id="buy-gold-btn" class="pricing-btn featured">Choose Gold</button>
                     </div>
                     
                     <div class="pricing-card">
-                        <h3>Ultimate</h3>
-                        <div class="price">&#8377;999</div>
+                        <h3>Platinum</h3>
+                        <div class="price">&#8377;299</div>
                         <div class="period">per month</div>
                         <ul class="pricing-features">
-                            <li>Everything in Pro</li>
+                            <li>Everything in Gold</li>
                             <li>Previous year papers</li>
                             <li>Live doubt chat</li>
                             <li>1-on-1 mentorship</li>
                             <li>Offline access</li>
-                            <li>Performance insights</li>
+                            <li>Premium support</li>
                         </ul>
-                        <button id="buy-ultimate-btn" class="pricing-btn primary">Choose Ultimate</button>
+                        <button id="buy-platinum-btn" class="pricing-btn primary">Choose Platinum</button>
                     </div>
                 </div>
             </div>
@@ -112,10 +126,12 @@
             })
             .catch(console.error);
         }
-        var proBtn = document.getElementById('buy-pro-btn');
-        if (proBtn) proBtn.addEventListener('click', function(e){ e.preventDefault(); buy(1); });
-        var ultimateBtn = document.getElementById('buy-ultimate-btn');
-        if (ultimateBtn) ultimateBtn.addEventListener('click', function(e){ e.preventDefault(); buy(2); });
+        var silverBtn = document.getElementById('buy-silver-btn');
+        if (silverBtn) silverBtn.addEventListener('click', function(e){ e.preventDefault(); buy(1); });
+        var goldBtn = document.getElementById('buy-gold-btn');
+        if (goldBtn) goldBtn.addEventListener('click', function(e){ e.preventDefault(); buy(2); });
+        var platinumBtn = document.getElementById('buy-platinum-btn');
+        if (platinumBtn) platinumBtn.addEventListener('click', function(e){ e.preventDefault(); buy(3); });
     })();
     </script>
 </body>
