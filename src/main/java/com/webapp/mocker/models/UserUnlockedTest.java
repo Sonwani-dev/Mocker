@@ -34,8 +34,8 @@ public class UserUnlockedTest {
             unlockedAt = new Timestamp(System.currentTimeMillis());
         }
         if (expiresAt == null) {
-            long thirtyDaysMs = 30L * 24 * 60 * 60 * 1000;
-            expiresAt = new Timestamp(unlockedAt.getTime() + thirtyDaysMs);
+            long ninetyDaysMs = 90L * 24 * 60 * 60 * 1000;
+            expiresAt = new Timestamp(unlockedAt.getTime() + ninetyDaysMs);
         }
     }
 

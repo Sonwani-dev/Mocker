@@ -71,6 +71,17 @@
                         </div>
                         <h3 class="test-title">${mockTest.name}</h3>
                         <p class="test-description">${mockTest.description}</p>
+                        
+                        <!-- Test Theory Preview -->
+                        <c:if test="${not empty mockTest.theoryText}">
+                            <div class="test-theory-preview">
+                                <div class="theory-icon">📚</div>
+                                <div class="theory-text">
+                                    ${mockTest.theoryText.length() > 150 ? mockTest.theoryText.substring(0, 150).concat('...') : mockTest.theoryText}
+                                </div>
+                            </div>
+                        </c:if>
+                        
                         <div class="test-stats">
                             <div class="stat-item">
                                 <span>⏱</span>

@@ -176,6 +176,11 @@ public class PeSubjectsController {
     public String showAnalysis() {
         return "mocktest-analysis";
     }
+    
+    @GetMapping("/leaderboard")
+    public String showLeaderboard() {
+        return "leaderboard";
+    }
 
     @PostMapping("/mocktest/unlock")
     public String unlockMockTest(@RequestParam Long mockTestId, HttpSession session, Model model) {

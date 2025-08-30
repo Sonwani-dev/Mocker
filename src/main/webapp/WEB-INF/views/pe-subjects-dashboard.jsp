@@ -8,6 +8,9 @@
     <title>Physical Education Topics - MockTestPro</title>
     <!-- Link to PE Dashboard CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/pe-dashboard.css">
+    <!-- Emoji Font Support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Link to PE Dashboard JavaScript -->
     <script src="${pageContext.request.contextPath}/resources/js/pe-dashboard.js"></script>
 </head>
@@ -107,6 +110,47 @@
                     <div class="stat-card">
                         <div class="stat-number">98%</div>
                         <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Section -->
+        <div class="services-section">
+            <div class="services-container">
+                <h2 class="services-title">Our Services</h2>
+                <p class="services-subtitle">Comprehensive solutions for your exam preparation journey</p>
+                
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">📝</div>
+                        <h3>Mock Test Papers (All Categories)</h3>
+                        <p>Practice with unlimited mock papers for every category to boost confidence.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📚</div>
+                        <h3>Previous Year Question Papers</h3>
+                        <p>Access solved & unsolved past year papers for smart preparation.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">⚡</div>
+                        <h3>Instant Results</h3>
+                        <p>Get your scores immediately after completing a test.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🤖</div>
+                        <h3>AI-Powered Explanations</h3>
+                        <p>Stuck on a question? Our AI explains answers in simple, easy-to-understand steps.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🏆</div>
+                        <h3>Leaderboard & Rankings</h3>
+                        <p>Compete with other students and track your performance in real-time.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📊</div>
+                        <h3>Performance Analytics (Optional Add-on)</h3>
+                        <p>Detailed insights into your strengths & weaknesses for targeted improvement.</p>
                     </div>
                 </div>
             </div>

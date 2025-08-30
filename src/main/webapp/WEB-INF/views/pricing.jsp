@@ -29,6 +29,15 @@
                 <h2 class="section-title" id="pricing">Choose Your Plan</h2>
                 <p class="section-subtitle">Flexible pricing options designed for every student's needs</p>
                 
+                <!-- Debug Information (remove in production) -->
+                <div style="background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 8px; padding: 16px; margin-bottom: 24px; font-family: monospace; font-size: 12px;">
+                    <strong>DEBUG INFO:</strong><br>
+                    Silver Plan: ${silverPlan != null ? 'ID: ' + silverPlan.id + ', Price: ₹' + silverPlan.price : 'NOT FOUND'}<br>
+                    Gold Plan: ${goldPlan != null ? 'ID: ' + goldPlan.id + ', Price: ₹' + goldPlan.price : 'NOT FOUND'}<br>
+                    Platinum Plan: ${platinumPlan != null ? 'ID: ' + platinumPlan.id + ', Price: ₹' + platinumPlan.price : 'NOT FOUND'}<br>
+                    User Logged In: ${loggedIn}
+                </div>
+                
                 <div class="pricing-grid">
                     <div class="pricing-card">
                         <h3>Free</h3>
@@ -46,7 +55,7 @@
                     <div class="pricing-card">
                         <h3>Silver</h3>
                         <div class="price">&#8377;99</div>
-                        <div class="period">per month</div>
+                        <div class="period">for 90 days</div>
                         <ul class="pricing-features">
                             <li>Unlimited mock papers</li>
                             <li>Detailed explanations</li>
@@ -60,7 +69,7 @@
                     <div class="pricing-card featured">
                         <h3>Gold</h3>
                         <div class="price">&#8377;199</div>
-                        <div class="period">per month</div>
+                        <div class="period">for 90 days</div>
                         <ul class="pricing-features">
                             <li>Everything in Silver</li>
                             <li>Advanced analytics</li>
@@ -75,7 +84,7 @@
                     <div class="pricing-card">
                         <h3>Platinum</h3>
                         <div class="price">&#8377;299</div>
-                        <div class="period">per month</div>
+                        <div class="period">for 90 days</div>
                         <ul class="pricing-features">
                             <li>Everything in Gold</li>
                             <li>Previous year papers</li>
@@ -96,27 +105,62 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
     (function(){
+        // Get plan IDs from backend data
+        var silverPlanId = ${silverPlan != null ? silverPlan.id : 'null'};
+        var goldPlanId = ${goldPlan != null ? goldPlan.id : 'null'};
+        var platinumPlanId = ${platinumPlan != null ? platinumPlan.id : 'null'};
+        
+        // Debug information
+        console.log('=== PLAN IDS DEBUG ===');
+        console.log('Silver Plan ID:', silverPlanId);
+        console.log('Gold Plan ID:', goldPlanId);
+        console.log('Platinum Plan ID:', platinumPlanId);
+        console.log('Logged In:', "<%= loggedIn %>");
+        
+        // Show plan IDs on the page for debugging
+        if (silverPlanId) document.getElementById('buy-silver-btn').setAttribute('data-plan-id', silverPlanId);
+        if (goldPlanId) document.getElementById('buy-gold-btn').setAttribute('data-plan-id', goldPlanId);
+        if (platinumPlanId) document.getElementById('buy-platinum-btn').setAttribute('data-plan-id', platinumPlanId);
+        
         function buy(planId) {
-        var loggedIn = "<%= loggedIn %>" === "true";
-        if (!loggedIn) {
-            window.location.href = "${pageContext.request.contextPath}/login";
-            return;
-        }
+            var loggedIn = "<%= loggedIn %>" === "true";
+            if (!loggedIn) {
+                window.location.href = "${pageContext.request.contextPath}/login";
+                return;
+            }
+            
+            if (!planId) {
+                console.error('Plan ID not found');
+                alert('Plan not available. Please try again later.');
+                return;
+            }
+            
+            console.log('Attempting to buy plan with ID:', planId);
+            
             fetch(`${pageContext.request.contextPath}/create-order?planId=${planId}`, { method: 'POST', credentials: 'include' })
-            .then(res => { if (!res.ok) throw new Error('Order creation failed'); return res.json(); })
-        .then(data => {
-            var options = {
+            .then(res => { 
+                console.log('Response status:', res.status);
+                if (!res.ok) {
+                    console.error('Order creation failed:', res.status);
+                    throw new Error('Order creation failed'); 
+                }
+                return res.json(); 
+            })
+            .then(data => {
+                console.log('Order created successfully:', data);
+                var options = {
                     key: 'rzp_test_juGDlBGq2m7P9a',
                     order_id: data.orderId,
                     handler: function (response){
+                        console.log('Payment successful:', response);
                         fetch('${pageContext.request.contextPath}/payment-success', {
-                        method: 'POST',
+                            method: 'POST',
                             credentials: 'include',
                             headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            razorpay_payment_id: response.razorpay_payment_id,
-                            razorpay_order_id: response.razorpay_order_id,
-                            signature: response.razorpay_signature,
+                            body: JSON.stringify({
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_order_id: response.razorpay_order_id,
+                                signature: response.razorpay_signature,
                                 planId: planId
                             })
                         }).then(() => window.location.href = "${pageContext.request.contextPath}/pe-subjects");
@@ -124,14 +168,20 @@
                 };
                 new Razorpay(options).open();
             })
-            .catch(console.error);
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Payment initialization failed. Please try again.');
+            });
         }
+        
         var silverBtn = document.getElementById('buy-silver-btn');
-        if (silverBtn) silverBtn.addEventListener('click', function(e){ e.preventDefault(); buy(1); });
+        if (silverBtn) silverBtn.addEventListener('click', function(e){ e.preventDefault(); buy(silverPlanId); });
+        
         var goldBtn = document.getElementById('buy-gold-btn');
-        if (goldBtn) goldBtn.addEventListener('click', function(e){ e.preventDefault(); buy(2); });
+        if (goldBtn) goldBtn.addEventListener('click', function(e){ e.preventDefault(); buy(goldPlanId); });
+        
         var platinumBtn = document.getElementById('buy-platinum-btn');
-        if (platinumBtn) platinumBtn.addEventListener('click', function(e){ e.preventDefault(); buy(3); });
+        if (platinumBtn) platinumBtn.addEventListener('click', function(e){ e.preventDefault(); buy(platinumPlanId); });
     })();
     </script>
 </body>

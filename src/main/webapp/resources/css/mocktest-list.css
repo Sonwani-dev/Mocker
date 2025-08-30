@@ -265,7 +265,31 @@ body {
     color: var(--medium-gray);
     font-size: 14px;
     line-height: 1.5;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
+}
+
+.test-theory-preview {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: rgba(23, 162, 184, 0.05);
+    border: 1px solid rgba(23, 162, 184, 0.1);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.theory-icon {
+    font-size: 20px;
+    color: #17a2b8;
+    flex-shrink: 0;
+}
+
+.theory-text {
+    color: var(--medium-gray);
+    font-size: 13px;
+    line-height: 1.5;
+    font-style: italic;
 }
 
 .test-stats {

@@ -46,7 +46,7 @@ public class AdminController {
     @Autowired private AnswerOptionRepository answerOptionRepository;
 
     @GetMapping("/login")
-    public String loginPage() { return "admin-login"; }
+    public String loginPage() { return "admin-login-new"; }
 
     @PostMapping("/login")
     public String doLogin(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
@@ -55,7 +55,7 @@ public class AdminController {
             return "redirect:/admin/dashboard";
         }
         model.addAttribute("error", "Invalid credentials");
-        return "admin-login";
+        return "admin-login-new";
     }
 
     @GetMapping("/dashboard")
@@ -126,9 +126,10 @@ public class AdminController {
     public String createTopic(
         @RequestParam String topicName,
         @RequestParam(required = false) String topicDescription,
-        @RequestParam(required = false) Integer starterUnlockedTests,
-        @RequestParam(required = false) Integer proUnlockedTests,
-        @RequestParam(required = false) Integer ultimateUnlockedTests,
+        @RequestParam(required = false) Integer freeUnlockedTests,
+        @RequestParam(required = false) Integer silverUnlockedTests,
+        @RequestParam(required = false) Integer goldUnlockedTests,
+        @RequestParam(required = false) Integer platinumUnlockedTests,
         HttpSession session,
         Model model
     ) {
@@ -139,9 +140,10 @@ public class AdminController {
             topic.setName(topicName.trim());
             topic.setSubject("Physical Education");
             topic.setDescription(StringUtils.hasText(topicDescription) ? topicDescription.trim() : topicName.trim());
-            if (starterUnlockedTests != null) topic.setStarterUnlockedTests(starterUnlockedTests);
-            if (proUnlockedTests != null) topic.setProUnlockedTests(proUnlockedTests);
-            if (ultimateUnlockedTests != null) topic.setUltimateUnlockedTests(ultimateUnlockedTests);
+            if (freeUnlockedTests != null) topic.setFreeUnlockedTests(freeUnlockedTests);
+            if (silverUnlockedTests != null) topic.setSilverUnlockedTests(silverUnlockedTests);
+            if (goldUnlockedTests != null) topic.setGoldUnlockedTests(goldUnlockedTests);
+            if (platinumUnlockedTests != null) topic.setPlatinumUnlockedTests(platinumUnlockedTests);
             topicRepository.save(topic);
         } catch (Exception e) {
             // Optionally could add flash message; keep simple with redirect
@@ -249,13 +251,15 @@ public class AdminController {
     public String upload(
         @RequestParam(required = false) Long topicId,
         @RequestParam(required = false) String newTopic,
-        @RequestParam(required = false) Integer starterUnlockedTests,
-        @RequestParam(required = false) Integer proUnlockedTests,
-        @RequestParam(required = false) Integer ultimateUnlockedTests,
+        @RequestParam(required = false) Integer freeUnlockedTests,
+        @RequestParam(required = false) Integer silverUnlockedTests,
+        @RequestParam(required = false) Integer goldUnlockedTests,
+        @RequestParam(required = false) Integer platinumUnlockedTests,
         @RequestParam String testName,
         @RequestParam(required = false) String testDescription,
         @RequestParam Integer numberOfQuestions,
         @RequestParam Integer durationMinutes,
+        @RequestParam(required = false) String testTheory,
         @RequestParam("file") MultipartFile file,
         HttpSession session,
         Model model
@@ -272,10 +276,11 @@ public class AdminController {
                 topic.setName(newTopic);
                 topic.setSubject("Physical Education");
                 topic.setDescription(newTopic);
-                // Save per-package unlock configuration if provided
-                if (starterUnlockedTests != null) topic.setStarterUnlockedTests(starterUnlockedTests);
-                if (proUnlockedTests != null) topic.setProUnlockedTests(proUnlockedTests);
-                if (ultimateUnlockedTests != null) topic.setUltimateUnlockedTests(ultimateUnlockedTests);
+                        // Save per-package unlock configuration if provided
+        if (freeUnlockedTests != null) topic.setFreeUnlockedTests(freeUnlockedTests);
+        if (silverUnlockedTests != null) topic.setSilverUnlockedTests(silverUnlockedTests);
+        if (goldUnlockedTests != null) topic.setGoldUnlockedTests(goldUnlockedTests);
+        if (platinumUnlockedTests != null) topic.setPlatinumUnlockedTests(platinumUnlockedTests);
                 topic = topicRepository.save(topic);
             }
 
@@ -293,6 +298,10 @@ public class AdminController {
             mt.setId(newId);
             
             mt.setDurationMinutes(durationMinutes);
+            // Set test theory if provided
+            if (testTheory != null && !testTheory.trim().isEmpty()) {
+                mt.setTheoryText(testTheory.trim());
+            }
             // numberOfQuestions set after parsing rows (source of truth)
             mt.setCompletionPercent(0);
             mt = mockTestRepository.save(mt);

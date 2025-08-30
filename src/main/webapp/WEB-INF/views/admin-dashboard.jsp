@@ -167,6 +167,14 @@
                         <input type="number" name="durationMinutes" class="form-input" min="1" required />
                     </div>
                     
+                    <div class="form-group">
+                        <label class="form-label">Test Theory</label>
+                        <textarea name="testTheory" class="form-input" rows="6" placeholder="Enter comprehensive theory content for this test..." style="resize: vertical;"></textarea>
+                        <small style="color: var(--text-secondary); font-size: 12px; margin-top: 8px; display: block;">
+                            Add detailed theory, concepts, formulas, or background information that students should know for this test
+                        </small>
+                    </div>
+                    
                     <!-- Per-package unlock counts are configured in Create New Topic section above -->
                     
                     <!-- File Upload -->

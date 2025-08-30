@@ -17,10 +17,10 @@ public class DataSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        ensurePlan("Free", "Free plan - 1 test per topic", new java.math.BigDecimal("0"), 30, 1);
-        ensurePlan("Silver", "Silver plan - unlimited tests", new java.math.BigDecimal("99"), 30, null);
-        ensurePlan("Gold", "Gold plan - premium features", new java.math.BigDecimal("199"), 30, null);
-        ensurePlan("Platinum", "Platinum plan - ultimate features", new java.math.BigDecimal("299"), 30, null);
+        ensurePlan("Free", "Free plan - 1 test per topic", new java.math.BigDecimal("0"), 90, 1);
+        ensurePlan("Silver", "Silver plan - unlimited tests", new java.math.BigDecimal("99"), 90, null);
+        ensurePlan("Gold", "Gold plan - premium features", new java.math.BigDecimal("199"), 90, null);
+        ensurePlan("Platinum", "Platinum plan - ultimate features", new java.math.BigDecimal("299"), 90, null);
     }
 
     private void ensurePlan(String name, String description, java.math.BigDecimal price, Integer durationDays, Integer maxTests) {

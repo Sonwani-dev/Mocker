@@ -8,6 +8,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style.css">
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Emoji Font Support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Link to JavaScript -->
     <script src="${pageContext.request.contextPath}/resources/js/theme.js"></script>
 </head>
@@ -60,32 +63,42 @@
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Features Section -->
-        <section class="features">
-            <div class="features-container">
-                <h2 class="section-title">Why Choose MockTestPro?</h2>
-                <p class="section-subtitle">Everything you need for a winning preparation strategy</p>
+        <!-- Services Section -->
+        <section class="services">
+            <div class="services-container">
+                <h2 class="section-title">Our Services</h2>
+                <p class="section-subtitle">Comprehensive solutions for your exam preparation journey</p>
                 
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">&#128202;</div>
-                        <h3>Deep Analytics</h3>
-                        <p>Visualize performance patterns, identify knowledge gaps, and track your accuracy trends with comprehensive AI-powered insights.</p>
+                <div class="services-grid">
+                    <div class="service-card">
+                        <div class="service-icon">📝</div>
+                        <h3>Mock Test Papers (All Categories)</h3>
+                        <p>Practice with unlimited mock papers for every category to boost confidence.</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">&#127919;</div>
-                        <h3>AI Recommendations</h3>
-                        <p>Get dynamic, topic-based suggestions powered by machine learning to strengthen your weak areas and optimize study time.</p>
+                    <div class="service-card">
+                        <div class="service-icon">📚</div>
+                        <h3>Previous Year Question Papers</h3>
+                        <p>Access solved & unsolved past year papers for smart preparation.</p>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">&#128218;</div>
-                        <h3>Previous Year Papers</h3>
-                        <p>Practice with authentic past papers to understand exam patterns, question types, and boost your confidence.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">&#9889;</div>
+                    <div class="service-card">
+                        <div class="service-icon">⚡</div>
                         <h3>Instant Results</h3>
-                        <p>Receive immediate feedback with detailed explanations, solution steps, and performance metrics for every question.</p>
+                        <p>Get your scores immediately after completing a test.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🤖</div>
+                        <h3>AI-Powered Explanations</h3>
+                        <p>Stuck on a question? Our AI explains answers in simple, easy-to-understand steps.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">🏆</div>
+                        <h3>Leaderboard & Rankings</h3>
+                        <p>Compete with other students and track your performance in real-time.</p>
+                    </div>
+                    <div class="service-card">
+                        <div class="service-icon">📊</div>
+                        <h3>Performance Analytics (Optional Add-on)</h3>
+                        <p>Detailed insights into your strengths & weaknesses for targeted improvement.</p>
                     </div>
                 </div>
             </div>
@@ -161,7 +174,7 @@
                     <div class="pricing-card">
                         <h3>Silver</h3>
                         <div class="price">&#8377;99</div>
-                        <div class="period">per month</div>
+                        <div class="period">for 90 days</div>
                         <ul class="pricing-features">
                             <li>Unlimited mock papers</li>
                             <li>Detailed explanations</li>
@@ -175,7 +188,7 @@
                     <div class="pricing-card featured">
                         <h3>Gold</h3>
                         <div class="price">&#8377;199</div>
-                        <div class="period">per month</div>
+                        <div class="period">for 90 days</div>
                         <ul class="pricing-features">
                             <li>Everything in Silver</li>
                             <li>Advanced analytics</li>
@@ -190,7 +203,7 @@
                     <div class="pricing-card">
                         <h3>Platinum</h3>
                         <div class="price">&#8377;299</div>
-                        <div class="period">per month</div>
+                        <div class="period">for 90 days</div>
                         <ul class="pricing-features">
                             <li>Everything in Gold</li>
                             <li>Previous year papers</li>

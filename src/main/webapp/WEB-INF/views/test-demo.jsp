@@ -90,7 +90,6 @@
                 <h2 class="question-text"><span class="topic-title">${topicName}</span> · <span class="test-title">Mock Test ${testNumber}</span></h2>
                 <div id="questionText" class="question-text"></div>
                 <div id="optionsContainer" class="options"></div>
-                <div id="explanation" class="explanation" style="display:none;"></div>
                 <div class="question-actions">
                     <button id="skipBtn" class="btn-secondary">Skip</button>
                     <button id="nextBtn" class="btn-primary">Next →</button>

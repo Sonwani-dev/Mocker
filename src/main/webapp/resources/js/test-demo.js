@@ -1,4 +1,108 @@
 (function() {
+    // Anti-copying protection for test content
+    function preventCopying() {
+        // Prevent right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Prevent keyboard shortcuts for copying
+        document.addEventListener('keydown', function(e) {
+            // Prevent Ctrl+C, Ctrl+X, Ctrl+A, Ctrl+V, Ctrl+Shift+C
+            if ((e.ctrlKey || e.metaKey) && 
+                (e.key === 'c' || e.key === 'C' || 
+                 e.key === 'x' || e.key === 'X' || 
+                 e.key === 'a' || e.key === 'A' || 
+                 e.key === 'v' || e.key === 'V' ||
+                 (e.shiftKey && (e.key === 'c' || e.key === 'C')))) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Prevent F12 (developer tools)
+            if (e.key === 'F12') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Prevent drag and drop
+        document.addEventListener('dragstart', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Prevent text selection
+        document.addEventListener('selectstart', function(e) {
+            if (e.target.closest('.test-container')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Prevent copy events
+        document.addEventListener('copy', function(e) {
+            if (e.target.closest('.test-container')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Prevent cut events
+        document.addEventListener('cut', function(e) {
+            if (e.target.closest('.test-container')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Prevent paste events
+        document.addEventListener('paste', function(e) {
+            if (e.target.closest('.test-container')) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        console.log('Anti-copying protection enabled');
+    }
+
+    // Additional protection methods
+    function enhanceProtection() {
+        // Prevent view source
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'u') {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // Prevent developer tools (additional methods)
+        setInterval(function() {
+            const devtools = /./;
+            devtools.toString = function() {
+                this.opened = true;
+            }
+            console.log('%c', devtools);
+            if (devtools.opened) {
+                console.clear();
+                devtools.opened = false;
+            }
+        }, 1000);
+
+        // Disable console logging in production
+        if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+            console.log = function() {};
+            console.warn = function() {};
+            console.error = function() {};
+        }
+    }
+
+    // Initialize anti-copying protection
+    preventCopying();
+    enhanceProtection();
+
     const meta = document.querySelector('.test-meta');
     const mockTestId = meta?.getAttribute('data-mocktest-id');
     const totalQuestions = parseInt(meta?.getAttribute('data-total-questions') || '1', 10);
@@ -10,7 +114,6 @@
     const qNumberEl = document.getElementById('questionNumber');
     const qTextEl = document.getElementById('questionText');
     const optionsEl = document.getElementById('optionsContainer');
-    const explanationEl = document.getElementById('explanation');
     const nextBtn = document.getElementById('nextBtn');
     const skipBtn = document.getElementById('skipBtn');
     const progressFill = document.getElementById('progressFill');
@@ -55,8 +158,6 @@
         // While skip is available (unanswered), Next should be disabled per requirement
         nextBtn.disabled = true;
         if (skipBtn) skipBtn.style.display = '';
-        explanationEl.style.display = 'none';
-        explanationEl.textContent = '';
 
         qNumberEl.textContent = `Q${index + 1}`;
         qTextEl.textContent = q.text;
@@ -90,21 +191,24 @@
                 body: JSON.stringify({ questionId, optionId })
             });
             const data = await res.json();
+            // Store the answer data for later analysis (including explanation and correct option)
             if (data.correct) {
-                button.classList.add('correct');
-                answers[currentIndex] = { questionId, selectedOptionId: optionId, correct: true };
+                answers[currentIndex] = { 
+                    questionId, 
+                    selectedOptionId: optionId, 
+                    correct: true,
+                    explanation: data.explanation || null,
+                    correctOptionId: data.correctOptionId || null
+                };
             } else {
-                button.classList.add('wrong');
-                if (data.explanation) {
-                    explanationEl.textContent = data.explanation;
-                    explanationEl.style.display = 'block';
-                }
-                const opts = Array.from(optionsEl.querySelectorAll('.option-btn'));
-                const correctBtnIdx = questions[currentIndex].options.findIndex(o => o.optionId === data.correctOptionId);
-                if (correctBtnIdx >= 0) {
-                    opts[correctBtnIdx].classList.add('correct');
-                }
-                answers[currentIndex] = { questionId, selectedOptionId: optionId, correct: false };
+                // Don't show explanation during test - store it for later
+                answers[currentIndex] = { 
+                    questionId, 
+                    selectedOptionId: optionId, 
+                    correct: false,
+                    explanation: data.explanation || null,
+                    correctOptionId: data.correctOptionId || null
+                };
             }
             // After selecting any option: hide Skip and enable Next
             if (skipBtn) skipBtn.style.display = 'none';
@@ -131,14 +235,26 @@
     nextBtn.addEventListener('click', () => {
         // If unanswered, record as skipped
         if (!answers[currentIndex]) {
-            answers[currentIndex] = { questionId: questions[currentIndex].questionId, selectedOptionId: null, correct: null };
+            answers[currentIndex] = { 
+                questionId: questions[currentIndex].questionId, 
+                selectedOptionId: null, 
+                correct: null,
+                explanation: null,
+                correctOptionId: null
+            };
         }
         goNext();
     });
 
     if (skipBtn) {
         skipBtn.addEventListener('click', () => {
-            answers[currentIndex] = { questionId: questions[currentIndex].questionId, selectedOptionId: null, correct: null };
+            answers[currentIndex] = { 
+                questionId: questions[currentIndex].questionId, 
+                selectedOptionId: null, 
+                correct: null,
+                explanation: null,
+                correctOptionId: null
+            };
             goNext();
         });
     }
@@ -176,6 +292,20 @@
 
         // Clear persisted progress for this test to prevent starting mid-way on navigation
         try { sessionStorage.removeItem(`mtp_progress_${mockTestId}`); } catch (e) {}
+
+        // Store detailed answer data in sessionStorage for the analysis page
+        try {
+            const analysisData = {
+                questions: questions,
+                answers: answers,
+                total: total,
+                correct: correct,
+                incorrect: incorrect,
+                unanswered: unanswered,
+                percent: percent
+            };
+            sessionStorage.setItem(`mtp_analysis_${mockTestId}`, JSON.stringify(analysisData));
+        } catch (e) { console.warn('Failed to store analysis data', e); }
 
         // Redirect to analysis page with query params
         const base = document.body.getAttribute('data-ctx') || '';

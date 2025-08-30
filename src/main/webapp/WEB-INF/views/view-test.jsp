@@ -144,6 +144,28 @@
             text-decoration: none;
         }
         
+        .theory-container {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #17a2b8;
+        }
+        
+        .theory-container h3 {
+            color: #17a2b8;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .theory-content {
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            font-size: 14px;
+        }
+        
         .no-questions {
             text-align: center;
             padding: 50px;
@@ -188,6 +210,16 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Test Theory Section -->
+        <c:if test="${not empty mockTest.theoryText}">
+            <div class="theory-container">
+                <h3>Test Theory</h3>
+                <div class="theory-content">
+                    ${mockTest.theoryText}
+                </div>
+            </div>
+        </c:if>
 
         <c:choose>
             <c:when test="${empty questionsWithAnswers}">

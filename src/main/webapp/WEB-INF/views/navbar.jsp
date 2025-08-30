@@ -6,6 +6,7 @@
             <li><a href="${pageContext.request.contextPath}/">Home</a></li>
             <li><a href="${pageContext.request.contextPath}/pe-subjects">Subjects</a></li>
             <li><a href="${pageContext.request.contextPath}/pricing">Pricing</a></li>
+            <li><a href="${pageContext.request.contextPath}/leaderboard">🏆 Leaderboard</a></li>
             <li><a href="${pageContext.request.contextPath}/pe-subjects">Dashboard</a></li>
         </ul>
         <div class="nav-actions">
